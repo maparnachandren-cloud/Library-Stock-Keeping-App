@@ -19,7 +19,6 @@ function App() {
 
   return (
     <>
-     <h1>Library</h1>
      <Navbar/>
      <Routes>
      <Route path="/" element={<Navigate to="/login"></Navigate>}/>
