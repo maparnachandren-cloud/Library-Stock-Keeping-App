@@ -196,8 +196,19 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Admin Dashboard</h1>
+    <div style={{ 
+      padding: "30px",
+      fontFamily: "Poppins" }}>
+      <h1
+      style={{
+       backgroundColor: "#e3f2fd",
+       padding: "15px",
+       borderRadius: "12px",
+       fontFamily: "Poppins",
+       marginBottom: "20px",
+       color: "#1565c0",
+     }}
+      >Admin Dashboard</h1>
 
       {/* Top Buttons */}
       <div
@@ -212,16 +223,33 @@ const AdminDashboard = () => {
           variant="contained"
           color="primary"
           onClick
+          sx={{
+           bgcolor: "primary.main",
+           "&:hover": {
+           bgcolor: "primary.dark",
+           },
+           fontFamily: "Poppins",
+           fontWeight: "600",
+           fontSize: "15px",
+           borderRadius: "10px",
+           padding: "10px 18px",
+           }}
         >
-          Add New Book
+         Add New Book
         </Button>
+
         </Link>
 
-        
       </div>
 
       {/* Table */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper}
+         sx={{
+         borderRadius: "15px",
+         backgroundColor: "#eef5ff",
+         padding: "10px",
+         }}
+      >
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
             <TableRow>
@@ -260,6 +288,16 @@ const AdminDashboard = () => {
                     color="warning"
                     onClick
                     style={{ marginRight: "10px" }}
+                    sx={{
+                      backgroundColor: "#ffb726",
+                      "&:hover": {
+                        backgroundColor: "#ffa726",
+                      },
+                      fontFamily: "Poppins",
+                      fontWeight: "600",
+                      borderRadius: "10px",
+                      marginRight: "10px",
+                    }}
                   >
                     Update
                   </Button>
@@ -268,6 +306,15 @@ const AdminDashboard = () => {
                     variant="contained"
                     color="error"
                     onClick
+                    sx={{
+                      backgroundColor: "#d32f2f",
+                      "&:hover": {
+                        backgroundColor: "#b71c1c",
+                      },
+                      fontFamily: "Poppins",
+                      fontWeight: "600",
+                      borderRadius: "10px",
+                    }}
                   >
                     Delete
                   </Button>
