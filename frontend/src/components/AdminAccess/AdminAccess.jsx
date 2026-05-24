@@ -24,13 +24,13 @@ const AdminAccess = () => {
 
   const handleBlock = (id) => {
 
-    const updatedUsers = users.map((user) =>
+    const updatedUsers = users.map((user) =>  // maps loops through all users,creating a new updated array
       user.id === id
-        ? { ...user, blocked: !user.blocked }
+        ? { ...user, blocked: !user.blocked } 
         : user
     );
 
-    setUsers(updatedUsers);
+    setUsers(updatedUsers); //updates state
   };
 
   const handleDelete = (id) => {

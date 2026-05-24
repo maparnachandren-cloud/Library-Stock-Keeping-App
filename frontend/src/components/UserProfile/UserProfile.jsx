@@ -70,7 +70,7 @@ const UserProfile = () => {
 
             </div>
 
-          ) : (
+          ) : ( //else this happens
 
             <div>
 
