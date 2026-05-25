@@ -88,12 +88,102 @@ const Home = () => {
     },
     {
      id: "Bk10",
-     title: "The Girk with the Dragon Tattoo",
+     title: "The Girl with the Dragon Tattoo",
      author: "Stieg Larsson",
      pYear:2005,
      genre:"Crime Fiction",
      status: "Rented",
      coverUrl:"/images/murdertattoo.jpg"
+    },
+    {
+     id: "Bk11",
+     title: "The Godfather",
+     author: "Mario Puzo",
+     pYear:1969,
+     genre:"Crime Drama",
+     status: "Rented",
+     coverUrl:"/images/godfather.jpg"
+    },
+    {
+     id: "Bk12",
+     title: "Frankenstein",
+     author: "Mary Shelly",
+     pYear:1818,
+     genre:"Horror",
+     status: "Available",
+     coverUrl:"/images/frankenstein.jpg"
+    },
+    {
+     id: "Bk13",
+     title: "The Shining",
+     author: "Stephen King",
+     pYear:1977,
+     genre:"Psychological Horror",
+     status: "Available",
+     coverUrl:"/images/shining.jpg"
+    },
+    {
+     id: "Bk14",
+     title: "It",
+     author: "Stephen King",
+     pYear:1986,
+     genre:"Horror",
+     status: "Rented",
+     coverUrl:"/images/it.jpg"
+    },
+    {
+     id: "Bk15",
+     title: "Pride and Prejudice",
+     author: "Jane AUsten",
+     pYear:1813,
+     genre:"Roamance",
+     status: "Available",
+     coverUrl:"/images/prideandprejudice.jpg"
+    },
+    {
+     id: "Bk16",
+     title: "The Notebook",
+     author: "Nicholos Sparks",
+     pYear:1996,
+     genre:"Romance",
+     status: "Available",
+     coverUrl:"/images/notebook.jpg"
+    },
+    {
+     id: "Bk17",
+     title: "The Da Vinci Code",
+     author: "Dan Brown",
+     pYear:2003,
+     genre:"Action Thriller",
+     status: "Available",
+     coverUrl:"/images/davinci.jpg"
+    },
+    {
+     id: "Bk18",
+     title: "Mission Impossible",
+     author: "Jim Phelps",
+     pYear:1967,
+     genre:"Action Spy Thriller",
+     status: "Available",
+     coverUrl:"/images/mission.jpg"
+    },
+    {
+     id: "Bk19",
+     title: "Dune",
+     author: "Frank Herbert",
+     pYear:1965,
+     genre:"Science Fiction",
+     status: "Rented",
+     coverUrl:"/images/dune.jpg"
+    },
+    {
+     id: "Bk20",
+     title: "1984",
+     author: "George Orwell",
+     pYear:1949,
+     genre:"Dystopian Science Fiction",
+     status: "Rented",
+     coverUrl:"/images/ninteen.jpg"
     },
   ];
   return (
