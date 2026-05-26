@@ -1,210 +1,36 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-  Paper,
-  Checkbox,
-  FormControlLabel
-} from '@mui/material'
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Box, TextField, Button, Typography, Container, Alert } from '@mui/material';
 
-import { useNavigate } from 'react-router-dom'
-
-const Signup = () => {
-
+function Signup() {
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    place: '',
-    age: '',
-    education: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    terms: false
-  });
-
-  const handleChange = (e) => {
-
-    const { name, value, checked, type } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
-  };
-
-  const handleSignup = () => {
-
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.place ||
-      !formData.age ||
-      !formData.education ||
-      !formData.phone ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      alert('Please fill all fields');
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-
-    if (!formData.terms) {
-      alert('Please accept Terms and Conditions');
-      return;
-    }
-
-    alert('Account Created Successfully');
-    navigate('/login');
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData),
+      });
+      if (res.ok) { alert("Created!"); navigate('/login'); } 
+      else setError((await res.json()).message || "Failed");
+    } catch { setError("Connection failed"); }
   };
 
   return (
-
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f4f6f8',
-        py: 5
-      }}
-    >
-
-      <Container maxWidth="sm">
-
-        <Paper elevation={8} sx={{ p: 5, borderRadius: 5 }}>
-
-          <Typography variant="h3" align="center" fontWeight="bold" gutterBottom>
-            Signup
-          </Typography>
-
-          <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-            Create your library account
-          </Typography>
-
-          <TextField
-            required
-            fullWidth
-            label="Name"
-            name="name"
-            margin="normal"
-            value={formData.name}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Email"
-            name="email"
-            type="email"
-            margin="normal"
-            value={formData.email}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Place"
-            name="place"
-            margin="normal"
-            value={formData.place}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Age"
-            name="age"
-            type="number"
-            margin="normal"
-            value={formData.age}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Education"
-            name="education"
-            margin="normal"
-            value={formData.education}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Phone Number"
-            name="phone"
-            type="tel"
-            margin="normal"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Password"
-            name="password"
-            type="password"
-            margin="normal"
-            value={formData.password}
-            onChange={handleChange}
-          />
-
-          <TextField
-            required
-            fullWidth
-            label="Confirm Password"
-            name="confirmPassword"
-            margin="normal"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-
-          <FormControlLabel
-            sx={{ mt: 2 }}
-            control={
-              <Checkbox
-                name="terms"
-                checked={formData.terms}
-                onChange={handleChange}
-              />
-            }
-            label="Terms and conditions (if book is not returned or damaged fine will be charged)"
-          />
-
-          <Button
-            fullWidth
-            variant="contained"
-            size="large"
-            sx={{ mt: 3, py: 1.5, borderRadius: 3, fontSize: '1rem', textTransform: 'none' }}
-            onClick={handleSignup}
-          >
-            Signup
-          </Button>
-
-        </Paper>
-
-      </Container>
-
-    </Box>
-  )
+    <Container maxWidth="xs" sx={{ mt: 8 }}>
+      <Typography variant="h4" gutterBottom>Sign Up</Typography>
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      <Box component="form" onSubmit={handleSignup} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <TextField label="Name" required fullWidth onChange={e => setFormData({...formData, name: e.target.value})} />
+        <TextField label="Email" type="email" required fullWidth onChange={e => setFormData({...formData, email: e.target.value})} />
+        <TextField label="Password" type="password" required fullWidth onChange={e => setFormData({...formData, password: e.target.value})} />
+        <Button type="submit" variant="contained" fullWidth>Submit</Button>
+      </Box>
+      <Typography sx={{ mt: 2 }}><Link to="/login">Go to Login</Link></Typography>
+    </Container>
+  );
 }
 
-export default Signup
+export default Signup;

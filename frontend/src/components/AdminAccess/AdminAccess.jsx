@@ -1,149 +1,68 @@
-import React, { useState } from 'react'
-import {
-  Box,
-  Typography,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Container
-} from '@mui/material'
+import { useState, useEffect } from 'react';
+import { Container, Typography, Button, Tabs, Tab, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 
-const AdminAccess = () => {
+function AdminAccess() {
+  const [tab, setTab] = useState(0);
+  const [users, setUsers] = useState([]);
+  const [requests, setRequests] = useState([]);
 
-  const [users, setUsers] = useState([
-    { id: 1, name: 'Aparna', blocked: false },
-    { id: 2, name: 'Rahul', blocked: false },
-    { id: 3, name: 'Anjali', blocked: true },
-    { id: 4, name: 'Arjun', blocked: false }
-  ]);
-
-  const handleBlock = (id) => {
-
-    const updatedUsers = users.map((user) =>  // maps loops through all users,creating a new updated array
-      user.id === id
-        ? { ...user, blocked: !user.blocked } 
-        : user
-    );
-
-    setUsers(updatedUsers); //updates state
+  const fetchData = async () => {
+    setUsers(await (await fetch('http://localhost:5000/api/users')).json());
+    setRequests(await (await fetch('http://localhost:5000/api/requests')).json());
   };
+  useEffect(() => { fetchData(); }, []);
 
-  const handleDelete = (id) => {
-
-    const filteredUsers = users.filter((user) => user.id !== id);
-
-    setUsers(filteredUsers);
+  const updateReq = async (reqId, bookId, status) => {
+    await fetch(`http://localhost:5000/api/requests/${reqId}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ status, bookId }) });
+    fetchData();
+  };
+  const toggleBlock = async (id, isBlocked) => {
+    await fetch(`http://localhost:5000/api/users/${id}/block`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ isBlocked: !isBlocked }) });
+    fetchData();
   };
 
   return (
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom>Admin Access</Typography>
+      <Tabs value={tab} onChange={(e, v) => setTab(v)}>
+        <Tab label="Requests" />
+        <Tab label="Users" />
+      </Tabs>
+      
+      {tab === 0 && (
+        <Table>
+          <TableHead><TableRow><TableCell>Student</TableCell><TableCell>Book</TableCell><TableCell>Status</TableCell><TableCell>Actions</TableCell></TableRow></TableHead>
+          <TableBody>
+            {requests.map(req => (
+              <TableRow key={req._id}>
+                <TableCell>{req.userId?.name}</TableCell><TableCell>{req.bookId?.title}</TableCell><TableCell>{req.status}</TableCell>
+                <TableCell>
+                  {req.status === 'Pending' && <><Button onClick={() => updateReq(req._id, req.bookId._id, 'Approved')}>Approve</Button> <Button onClick={() => updateReq(req._id, req.bookId._id, 'Rejected')}>Reject</Button></>}
+                  {req.status === 'Approved' && <Button onClick={() => updateReq(req._id, req.bookId._id, 'Returned')}>Returned</Button>}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
 
-    <Box
-      sx={{
-        minHeight: '100vh',
-        backgroundColor: '#f4f6f8',
-        py: 5
-      }}
-    >
-
-      <Container>
-
-        <Paper elevation={8} sx={{ p: 4, borderRadius: 5 }}>
-
-          <Typography
-            variant="h4"
-            align="center"
-            fontWeight="bold"
-            gutterBottom
-          >
-            Admin Access
-          </Typography>
-
-          <Typography
-            variant="body1"
-            align="center"
-            color="text.secondary"
-            sx={{ mb: 4 }}
-          >
-            Manage all library users
-          </Typography>
-
-          <TableContainer component={Paper} elevation={3}>
-
-            <Table>
-
-              <TableHead>
-
-                <TableRow>
-
-                  <TableCell><b>User ID</b></TableCell>
-
-                  <TableCell><b>User Name</b></TableCell>
-
-                  <TableCell><b>Status</b></TableCell>
-
-                  <TableCell align="center"><b>Actions</b></TableCell>
-
-                </TableRow>
-
-              </TableHead>
-
-              <TableBody>
-
-                {
-                  users.map((user) => (
-
-                    <TableRow key={user.id}>
-
-                      <TableCell>{user.id}</TableCell>
-
-                      <TableCell>{user.name}</TableCell>
-
-                      <TableCell>
-                        {user.blocked ? 'Blocked' : 'Active'}
-                      </TableCell>
-
-                      <TableCell align="center">
-
-                        <Button
-                          variant="contained"
-                          color={user.blocked ? 'success' : 'warning'}
-                          sx={{ mr: 2 }}
-                          onClick={() => handleBlock(user.id)}
-                        >
-                          {user.blocked ? 'Unblock' : 'Block'}
-                        </Button>
-
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleDelete(user.id)}
-                        >
-                          Delete
-                        </Button>
-
-                      </TableCell>
-
-                    </TableRow>
-                  ))
-                }
-
-              </TableBody>
-
-            </Table>
-
-          </TableContainer>
-
-        </Paper>
-
-      </Container>
-
-    </Box>
-  )
+      {tab === 1 && (
+        <Table>
+          <TableHead><TableRow><TableCell>Name</TableCell><TableCell>Email</TableCell><TableCell>Status</TableCell><TableCell>Actions</TableCell></TableRow></TableHead>
+          <TableBody>
+            {users.map(user => (
+              <TableRow key={user._id}>
+                <TableCell>{user.name}</TableCell><TableCell>{user.email}</TableCell><TableCell>{user.isBlocked ? 'Blocked' : 'Active'}</TableCell>
+                <TableCell>
+                  <Button onClick={() => toggleBlock(user._id, user.isBlocked)}>{user.isBlocked ? 'Unblock' : 'Block'}</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </Container>
+  );
 }
 
-export default AdminAccess
+export default AdminAccess;
