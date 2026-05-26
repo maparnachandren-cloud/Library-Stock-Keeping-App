@@ -1,118 +1,273 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Box, Container, Typography, Button, Chip, Grid } from "@mui/material";
+ import { useState, useEffect } from 'react';
 
-const BookDetails = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const book = location.state;
-  if (!book) {
+import {
+  useParams
+} from 'react-router-dom';
+
+import {
+  Container,
+  Typography,
+  Button,
+  TextField,
+  Box
+} from '@mui/material';
+
+const BookDetails = ({
+  currentUser
+}) => {
+
+  const { id } = useParams();
+
+  const [book, setBook] = useState(null);
+
+  const [rating, setRating] = useState(0);
+
+  const [comment, setComment] = useState('');
+
+  useEffect(() => {
+
+    fetch(
+      `http://localhost:5000/api/books/${id}`
+    )
+      .then((res) => res.json())
+      .then(setBook);
+
+  }, [id]);
+
+  const refreshBook = async () => {
+
+    const updated = await (
+      await fetch(
+        `http://localhost:5000/api/books/${id}`
+      )
+    ).json();
+
+    setBook(updated);
+  };
+
+  const averageRating = () => {
+
+    if (!book.ratings.length) {
+      return 0;
+    }
+
     return (
-      <Container maxWidth="md" sx={{ py: 8, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>No book details found.</Typography>
-        <Button variant="contained" onClick={() => navigate("/")} sx={{ bgcolor: "#1a1a1a" }}>
-          Go Back Home
-        </Button>
-      </Container>
+      book.ratings.reduce(
+        (a, b) => a + b.value,
+        0
+      ) / book.ratings.length
+    ).toFixed(1);
+  };
+
+  const handleRent = async () => {
+
+    await fetch(
+      `http://localhost:5000/api/books/${id}/rent`,
+      {
+        method: 'PUT'
+      }
     );
-  }
+
+    refreshBook();
+  };
+
+  const handleRate = async () => {
+
+    await fetch(
+      `http://localhost:5000/api/books/${id}/rate`,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+          userId: currentUser._id,
+          value: Number(rating)
+        })
+      }
+    );
+
+    refreshBook();
+  };
+
+  const handleComment = async () => {
+
+    await fetch(
+      `http://localhost:5000/api/books/${id}/comment`,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+          user: currentUser.name,
+          text: comment
+        })
+      }
+    );
+
+    setComment('');
+
+    refreshBook();
+  };
+
+  const handleLike = async () => {
+
+    await fetch(
+      `http://localhost:5000/api/books/${id}/like`,
+      {
+        method: 'POST'
+      }
+    );
+
+    refreshBook();
+  };
+
+  if (!book) return null;
 
   return (
-    <Box sx={{ bgcolor: "#f8f9fa", minHeight: "100vh", py: 6 }}>
-      <Container maxWidth="md">
-        <Button 
-          onClick={() => navigate(-1)} 
-          sx={{ color: "#1a1a1a", fontWeight: 600, mb: 4, textTransform: "none" }}
-        >
-          ← Back to list
-        </Button>
-        <Box 
-          sx={{ 
-            bgcolor: "#ffffff", 
-            borderRadius: "16px", 
-            boxShadow: "0px 4px 20px rgba(0,0,0,0.05)", 
-            overflow: "hidden",
-            p: { xs: 3, md: 5 }
+    <Container sx={{ mt: 4 }}>
+
+      <img
+        src={book.coverImage}
+        alt={book.title}
+        width="250"
+      />
+
+      <Typography variant="h4">
+        {book.title}
+      </Typography>
+
+      <Typography>
+        Author: {book.author}
+      </Typography>
+
+      <Typography>
+        Genre: {book.genre}
+      </Typography>
+
+      <Typography>
+        ₹ {book.price}
+      </Typography>
+
+      <Typography>
+        {book.description}
+      </Typography>
+
+      <Typography>
+        Status:
+        {' '}
+        {book.isAvailable
+          ? 'Available'
+          : 'Rented'}
+      </Typography>
+
+      <Typography>
+        Rating:
+        {' '}
+        {averageRating()}
+        ⭐
+      </Typography>
+
+      <Typography>
+        Likes:
+        {' '}
+        {book.likes}
+      </Typography>
+
+      <Button
+        variant="contained"
+        disabled={!book.isAvailable}
+        onClick={handleRent}
+        sx={{ mt: 2 }}
+      >
+        Rent Book
+      </Button>
+
+      <Button
+        onClick={handleLike}
+        sx={{ ml: 2, mt: 2 }}
+      >
+        Like
+      </Button>
+
+      <Box sx={{ mt: 4 }}>
+
+        <Typography variant="h6">
+          Rate this book
+        </Typography>
+
+        <TextField
+          type="number"
+          inputProps={{
+            min: 1,
+            max: 5
           }}
+          value={rating}
+          onChange={(e) =>
+            setRating(e.target.value)
+          }
+        />
+
+        <Button onClick={handleRate}>
+          Submit Rating
+        </Button>
+
+      </Box>
+
+      <Box sx={{ mt: 4 }}>
+
+        <Typography variant="h6">
+          Comments
+        </Typography>
+
+        <TextField
+          fullWidth
+          multiline
+          rows={3}
+          value={comment}
+          onChange={(e) =>
+            setComment(e.target.value)
+          }
+        />
+
+        <Button
+          onClick={handleComment}
+          sx={{ mt: 2 }}
         >
-          <Grid container spacing={4}>
-            
-            <Grid item xs={12} md={4} display="flex" justifyContent="center">
-              <Box 
-                sx={{ 
-                  width: "100%", 
-                  maxWidth: "200px", 
-                  height: "280px", 
-                  borderRadius: "8px", 
-                  overflow: "hidden",
-                  border: "1px solid #f0f0f0",
-                  bgcolor: "#ffffff"
-                }}
-              >
-                <img 
-                  src={book.coverUrl} 
-                  alt={book.title} 
-                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={8} display="flex" flexDirection="column" justifyContent="space-between">
-              <Box>
-                <Chip 
-                  label={book.status} 
-                  color={book.status === "Available" ? "success" : "error"}
-                  size="small"
-                  sx={{ fontWeight: 700, borderRadius: "4px", mb: 2 }}
-                />
-                
-                <Typography variant="h4" sx={{ fontWeight: 800, color: "#1a1a1a", mb: 1, lineHeight: 1.2 }}>
-                  {book.title}
-                </Typography>
+          Add Comment
+        </Button>
 
-                <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 500, mb: 3 }}>
-                  by {book.author}
-                </Typography>
+        {book.comments.map((c, index) => (
 
-                <hr style={{ border: "0", borderTop: "1px solid #f0f0f0", marginBottom: "20px" }} />
+          <Box
+            key={index}
+            sx={{
+              mt: 2,
+              p: 2,
+              border: '1px solid #ccc'
+            }}
+          >
 
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-                  <Typography variant="body1">
-                    <strong>Genre:</strong> {book.genre || "Not Specified"}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Published Year:</strong> {book.pYear}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Book ID:</strong> {book.id}
-                  </Typography>
-                </Box>
-              </Box>
+            <Typography fontWeight="bold">
+              {c.user}
+            </Typography>
 
-              <Box sx={{ mt: 4 }}>
-                <Button 
-                  variant="contained" 
-                  disabled={book.status !== "Available"}
-                  sx={{ 
-                    bgcolor: "#1a1a1a", 
-                    color: "#fff", 
-                    px: 4, 
-                    py: 1,
-                    fontWeight: 600,
-                    textTransform: "none",
-                    borderRadius: "8px",
-                    "&:hover": { bgcolor: "#333333" }
-                  }}
-                >
-                  {book.status === "Available" ? "Rent this Book" : "Currently Unavailable"}
-                </Button>
-              </Box>
+            <Typography>
+              {c.text}
+            </Typography>
 
-            </Grid>
-          </Grid>
-        </Box>
+          </Box>
 
-      </Container>
-    </Box>
+        ))}
+
+      </Box>
+
+    </Container>
   );
 };
 

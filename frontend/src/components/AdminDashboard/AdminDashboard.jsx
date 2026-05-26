@@ -1,330 +1,474 @@
-import React from 'react'
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
+import { useState, useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
 
+import {
+  Container,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button,
+  Dialog,
+  TextField,
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
+
 const AdminDashboard = () => {
-   const books = [
-    {
-      id:"Bk01",
-      title: "Atomic Habits",
-      author: "James Clear",
-      pYear:2018,
-      genre:"Self Help Book",
-      isbn:9781847941831,
-      status: "Available",
-    },
-    {
-      id:"Bk02",
-      title: "Harry Potter",
-      author: "J.K Rowling",
-      pYear:1997,
-      genre:"Fantasy",
-      isbn:9781408855652,
-      status: "Rented"
-    },
-    {
-    id:"Bk03",
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    pYear:1988,
-    genre:"Adventure Fiction",
-    isbn:9780061122415,
-    status: "Available"
-    },
-    {
-    id:"Bk04",
-    title: "Rich Dad Poor Dad",
-    author: "Robert Kiyosaki",
-    pYear:1997,
-    genre:"Finance",
-    isbn:9781612680194,
-    status: "Rented",
-},
 
-{
-    id:"Bk05",
-    title: "The Psychology of Money",
-    author: "Morgan Housel",
-    pYear:2020,
-    genre:"Finance",
-    isbn:9780857197689,
-    status: "Available",
-},
+  const [books, setBooks] = useState([]);
 
-{
-    id:"Bk06",
-    title: "Ikigai",
-    author: "Hector Garcia",
-    pYear:2016,
-    genre:"Self Help",
-    isbn:9781786330895,
-    status: "Available",
-},
-{
-    id:"Bk07",
-    title: "Wings of Fire",
-    author: "A.P.J Abdul Kalam",
-    pYear:1999,
-    genre:"Autobiography",
-    isbn:9788173711466,
-    status: "Rented",
-},
-{
-    id:"Bk08",
-    title: "The Hobbit",
-    author: "J.R.R Tolkien",
-    pYear:1937,
-    genre:"Fantasy",
-    isbn:9780547928227,
-    status: "Available",
-},
-{
-    id:"Bk09",
-    title: "Murder on the Orient Express",
-    author: "Agatha Christie",
-    pYear:1934,
-    genre:"Crime Thriller",
-    isbn:9780062693662,
-    status: "Available"
-},
-{
-    id:"Bk10",
-    title: "The Girl with the Dragon Tattoo",
-    author: "Stieg Larsson",
-    pYear:2005,
-    genre:"Crime Fiction",
-    isbn:9780307454546,
-    status: "Available"
-},
-{
-    id:"Bk11",
-    title: "The Godfather",
-    author: "Mario Puzo",
-    pYear:1969,
-    genre:"Crime Drama",
-    isbn:9780451205766,
-    status: "Rented"
-},
-{
-    id:"Bk12",
-    title: "Frankenstein",
-    author: "Mary Shelley",
-    pYear:1818,
-    genre:"Horror",
-    isbn:9780486282114,
-    status: "Available"
-},
-{
-    id:"Bk13",
-    title: "The Shining",
-    author: "Stephen King",
-    pYear:1977,
-    genre:"Psychological Horror",
-    isbn:9780307743657,
-    status: "Available"
-},
-{
-    id:"Bk14",
-    title: "IT",
-    author: "Stephen King",
-    pYear:1986,
-    genre:"Horror",
-    isbn:9781501142970,
-    status: "Rented"
-},
-{
-    id:"Bk15",
-    title: "Pride and Prejudice",
-    author: "Jane Austen",
-    pYear:1813,
-    genre:"Romance",
-    isbn:9781503290563,
-    status: "Available"
-},
-{
-    id:"Bk16",
-    title: "The Notebook",
-    author: "Nicholas Sparks",
-    pYear:1996,
-    genre:"Romance",
-    isbn:9780446605236,
-    status: "Available"
-},
-{
-    id:"Bk17",
-    title: "The Da Vinci Code",
-    author: "Dan Brown",
-    pYear:2003,
-    genre:"Action Thriller",
-    isbn:9780307474278,
-    status: "Available"
-},
-{
-    id:"Bk18",
-    title: "Mission Impossible",
-    author: "Jim Phelps",
-    pYear:1988,
-    genre:"Action Spy Thriller",
-    isbn:9780671638108,
-    status: "Available"
-},
-{
-    id:"Bk19",
-    title: "Dune",
-    author: "Frank Herbert",
-    pYear:1965,
-    genre:"Science Fiction",
-    isbn:9780441172719,
-    status: "Rented"
-},
-{
-    id:"Bk20",
-    title: "1984",
-    author: "George Orwell",
-    pYear:1949,
-    genre:"Dystopian Science Fiction",
-    isbn:9780451524935,
-    status: "Available"
-}
-  ];
+  const [editing, setEditing] = useState(null);
+
+  const fetchBooks = async () => {
+
+    const data = await (
+      await fetch(
+        'http://localhost:5000/api/books'
+      )
+    ).json();
+
+    setBooks(data);
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const handleUpdate = async () => {
+
+    const res = await fetch(
+
+      `http://localhost:5000/api/books/${editing._id}`,
+
+      {
+        method: 'PUT',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify(editing)
+      }
+    );
+
+    if (res.ok) {
+
+      alert('Book updated successfully');
+
+      setEditing(null);
+
+      fetchBooks();
+
+    } else {
+
+      alert('Failed to update');
+
+    }
+  };
+
+  const handleDelete = async (id) => {
+
+    const confirmDelete =
+      window.confirm(
+        'Delete this book?'
+      );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    await fetch(
+
+      `http://localhost:5000/api/books/${id}`,
+
+      {
+        method: 'DELETE'
+      }
+    );
+
+    alert('Book deleted');
+
+    fetchBooks();
+  };
 
   return (
-    <div style={{ 
-      padding: "30px",
-      fontFamily: "Poppins" }}>
-      <h1
-      style={{
-       backgroundColor: "#e3f2fd",
-       padding: "15px",
-       borderRadius: "12px",
-       fontFamily: "Poppins",
-       marginBottom: "20px",
-       color: "#1565c0",
-     }}
-      >Admin Dashboard</h1>
 
-      {/* Top Buttons */}
-      <div
-        style={{
-          marginBottom: "20px",
-          display: "flex",
-          gap: "10px",
-        }}
+    <Container sx={{ mt: 4 }}>
+
+      <Typography
+        variant="h4"
+        gutterBottom
       >
-        <Link to="/addbook">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick
-          sx={{
-           bgcolor: "primary.main",
-           "&:hover": {
-           bgcolor: "primary.dark",
-           },
-           fontFamily: "Poppins",
-           fontWeight: "600",
-           fontSize: "15px",
-           borderRadius: "10px",
-           padding: "10px 18px",
-           }}
-        >
-         Add New Book
-        </Button>
+        Admin Dashboard
+      </Typography>
 
-        </Link>
-
-      </div>
-
-      {/* Table */}
-      <TableContainer component={Paper}
-         sx={{
-         borderRadius: "15px",
-         backgroundColor: "#eef5ff",
-         padding: "10px",
-         }}
+      <Button
+        variant="contained"
+        component={Link}
+        to="/admin/addbook"
+        sx={{ mb: 3 }}
       >
-        <Table sx={{ minWidth: 650 }}>
-          <TableHead>
-            <TableRow>
-              <TableCell><b>Book ID</b></TableCell>
-              <TableCell><b>Book Title</b></TableCell>
-              <TableCell><b>Author</b></TableCell>
-              <TableCell><b>Publication Year</b></TableCell>
-              <TableCell><b>Genre</b></TableCell>
-              <TableCell><b>ISBN</b></TableCell>
-              <TableCell><b>Rental Status</b></TableCell>
-              <TableCell><b>Actions</b></TableCell>
-            </TableRow>
-          </TableHead>
+        Add Book
+      </Button>
 
-          <TableBody>
-            {books.map((book) => (
-              <TableRow key={book.id}>
+      <Table>
 
-                <TableCell>{book.id}</TableCell>
+        <TableHead>
 
-                <TableCell>{book.title}</TableCell>
+          <TableRow>
 
-                <TableCell>{book.author}</TableCell>
+            <TableCell>
+              Book ID
+            </TableCell>
 
-                <TableCell>{book.pYear}</TableCell>
+            <TableCell>
+              Cover
+            </TableCell>
 
-                <TableCell>{book.genre}</TableCell>
+            <TableCell>
+              Cover URL
+            </TableCell>
 
-                <TableCell>{book.isbn}</TableCell>
+            <TableCell>
+              Title
+            </TableCell>
 
-                <TableCell>{book.status}</TableCell>
+            <TableCell>
+              Author
+            </TableCell>
+
+            <TableCell>
+              Genre
+            </TableCell>
+
+            <TableCell>
+              Price
+            </TableCell>
+
+            <TableCell>
+              Rating
+            </TableCell>
+
+            <TableCell>
+              Status
+            </TableCell>
+
+            <TableCell>
+              Actions
+            </TableCell>
+
+          </TableRow>
+
+        </TableHead>
+
+        <TableBody>
+
+          {books.map((book) => {
+
+            const averageRating =
+
+              book.ratings?.length
+
+                ? (
+                    book.ratings.reduce(
+                      (a, b) => a + b.value,
+                      0
+                    ) /
+                    book.ratings.length
+                  ).toFixed(1)
+
+                : 0;
+
+            return (
+
+              <TableRow key={book._id}>
 
                 <TableCell>
-                  <Button
-                    variant="contained"
-                    color="warning"
-                    onClick
-                    style={{ marginRight: "10px" }}
-                    sx={{
-                      backgroundColor: "#ffb726",
-                      "&:hover": {
-                        backgroundColor: "#ffa726",
-                      },
-                      fontFamily: "Poppins",
-                      fontWeight: "600",
-                      borderRadius: "10px",
-                      marginRight: "10px",
+                  {book._id}
+                </TableCell>
+
+                <TableCell>
+
+                  <img
+                    src={book.coverImage}
+                    alt={book.title}
+                    width="60"
+                    height="90"
+                    style={{
+                      objectFit: 'cover',
+                      borderRadius: '6px'
                     }}
+                  />
+
+                </TableCell>
+
+                <TableCell
+                  sx={{
+                    maxWidth: 220,
+                    wordBreak: 'break-word'
+                  }}
+                >
+                  {book.coverImage}
+                </TableCell>
+
+                <TableCell>
+                  {book.title}
+                </TableCell>
+
+                <TableCell>
+                  {book.author}
+                </TableCell>
+
+                <TableCell>
+                  {book.genre}
+                </TableCell>
+
+                <TableCell>
+                  ₹ {book.price}
+                </TableCell>
+
+                <TableCell>
+                  {averageRating} ⭐
+                </TableCell>
+
+                <TableCell>
+
+                  {book.isAvailable
+                    ? 'Available'
+                    : 'Rented'}
+
+                </TableCell>
+
+                <TableCell>
+
+                  <Button
+                    onClick={() =>
+                      setEditing(book)
+                    }
                   >
-                    Update
+                    Edit
                   </Button>
 
                   <Button
-                    variant="contained"
                     color="error"
-                    onClick
-                    sx={{
-                      backgroundColor: "#d32f2f",
-                      "&:hover": {
-                        backgroundColor: "#b71c1c",
-                      },
-                      fontFamily: "Poppins",
-                      fontWeight: "600",
-                      borderRadius: "10px",
-                    }}
+                    onClick={() =>
+                      handleDelete(book._id)
+                    }
                   >
                     Delete
                   </Button>
+
                 </TableCell>
+
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+            );
+          })}
+
+        </TableBody>
+
+      </Table>
+
+      <Dialog
+        open={!!editing}
+        onClose={() => setEditing(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+
+        <Box
+          sx={{
+            p: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2
+          }}
+        >
+
+          <Typography variant="h5">
+            Edit Book
+          </Typography>
+
+          {editing && (
+
+            <>
+
+              <TextField
+                label="Book ID"
+                value={editing._id}
+                disabled
+              />
+
+              <TextField
+                label="Title"
+                value={editing.title}
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    title: e.target.value
+                  })
+                }
+              />
+
+              <TextField
+                label="Author"
+                value={editing.author}
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    author: e.target.value
+                  })
+                }
+              />
+
+              <FormControl fullWidth>
+
+                <InputLabel>
+                  Genre
+                </InputLabel>
+
+                <Select
+                  value={editing.genre}
+                  label="Genre"
+                  onChange={(e) =>
+                    setEditing({
+                      ...editing,
+                      genre: e.target.value
+                    })
+                  }
+                >
+
+                  <MenuItem value="Fiction">
+                    Fiction
+                  </MenuItem>
+
+                  <MenuItem value="Fantasy">
+                    Fantasy
+                  </MenuItem>
+
+                  <MenuItem value="Science Fiction">
+                    Science Fiction
+                  </MenuItem>
+
+                  <MenuItem value="Mystery">
+                    Mystery
+                  </MenuItem>
+
+                  <MenuItem value="Thriller">
+                    Thriller
+                  </MenuItem>
+
+                  <MenuItem value="Romance">
+                    Romance
+                  </MenuItem>
+
+                  <MenuItem value="Horror">
+                    Horror
+                  </MenuItem>
+
+                  <MenuItem value="Biography">
+                    Biography
+                  </MenuItem>
+
+                  <MenuItem value="History">
+                    History
+                  </MenuItem>
+
+                  <MenuItem value="Education">
+                    Education
+                  </MenuItem>
+
+                </Select>
+
+              </FormControl>
+
+              <TextField
+                label="Price"
+                type="number"
+                value={editing.price}
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    price: e.target.value
+                  })
+                }
+              />
+
+              <TextField
+                label="Cover Image URL"
+                value={editing.coverImage}
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    coverImage: e.target.value
+                  })
+                }
+              />
+
+              <TextField
+                label="Description"
+                multiline
+                rows={4}
+                value={editing.description}
+                onChange={(e) =>
+                  setEditing({
+                    ...editing,
+                    description: e.target.value
+                  })
+                }
+              />
+
+              <FormControl fullWidth>
+
+                <InputLabel>
+                  Availability
+                </InputLabel>
+
+                <Select
+                  value={editing.isAvailable}
+                  label="Availability"
+                  onChange={(e) =>
+                    setEditing({
+                      ...editing,
+                      isAvailable: e.target.value
+                    })
+                  }
+                >
+
+                  <MenuItem value={true}>
+                    Available
+                  </MenuItem>
+
+                  <MenuItem value={false}>
+                    Rented
+                  </MenuItem>
+
+                </Select>
+
+              </FormControl>
+
+              <Button
+                variant="contained"
+                onClick={handleUpdate}
+              >
+                Save Changes
+              </Button>
+
+            </>
+
+          )}
+
+        </Box>
+
+      </Dialog>
+
+    </Container>
   );
 };
 

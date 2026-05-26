@@ -1,316 +1,321 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, Typography, Container, Button, Chip } from "@mui/material";
+import { useState, useEffect } from 'react';
+import {
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  CardActions,
+  Button,
+  Box,
+  TextField,
+  MenuItem,
+  InputAdornment,
+  IconButton,
+  Collapse,
+  Paper
+} from '@mui/material';
 
-const Home = () => {
-  const navigate = useNavigate();
-  const books = [
-    {
-      id: "Bk01",
-      title: "Atomic Habits",
-      author: "James Clear",
-      pYear: 2018,
-      genre: "Self Help Book",
-      status: "Available",
-      coverUrl:"/images/atomichabit.jpg" 
-    },
-    {
-      id: "Bk02",
-      title: "Harry Potter",
-      author: "J.K Rowling",
-      genre: "Fantasy",
-      pYear: 1997,
-      status: "Rented",
-      coverUrl:"/images/harrypotter.jpg"
-    },
-    {
-      id: "Bk03",
-      title: "The Alchemist",
-      author: "Paulo Coelho",
-      pYear: 1988,
-      genre: "Adventure Fiction",
-      status: "Available",
-      coverUrl:"/images/alchemist.jpg"
-    },
-    {
-      id: "Bk04",
-      title: "Rich Dad Poor Dad",
-      author: "Robert Kiyosaki",
-      pYear: 1997,
-      genre: "Finance",
-      status: "Rented",
-      coverUrl:"/images/rich dad.jpg"
-    },
-    {  
-      id: "Bk05",
-      title: "The Psychology of Money",
-      author: "Morgan Housel",
-      pYear: 2020,
-      genre: "Finance",
-      status: "Available",
-      coverUrl:"/images/money.jpg"
-    },
-    {
-     id: "Bk06",
-     title: "Ikigai",
-     author: "Hector Garcia",
-     pYear:2016,
-     genre:"Self Help",
-     status: "Available",
-     coverUrl:"/images/ikgai.jpg"
-   },
-   {
-     id: "Bk07",
-     title: "Wings of Fire",
-     author: "A.P.J Abdul Kalam",
-     pYear:1999,
-     genre:"Autobiography",
-     status: "Rented",
-     coverUrl:"/images/wingsoffire.jpg"
-    },
-    {
-     id: "Bk08",
-     title: "The Hobbit",
-     author: "J.R.R Tolkien",
-     pYear:1937,
-     genre:"Fantasy",
-     status: "Available",
-     coverUrl:"/images/hobbit.jpg"
-    },
-    {
-     id: "Bk09",
-     title: "Murder on the Orient Express",
-     author: "Agatha Christie",
-     pYear: 1934,
-     genre:"Crime Thriler",
-     status: "Available",
-     coverUrl:"/images/express.jpg"
-    },
-    {
-     id: "Bk10",
-     title: "The Girl with the Dragon Tattoo",
-     author: "Stieg Larsson",
-     pYear:2005,
-     genre:"Crime Fiction",
-     status: "Rented",
-     coverUrl:"/images/murdertattoo.jpg"
-    },
-    {
-     id: "Bk11",
-     title: "The Godfather",
-     author: "Mario Puzo",
-     pYear:1969,
-     genre:"Crime Drama",
-     status: "Rented",
-     coverUrl:"/images/godfather.jpg"
-    },
-    {
-     id: "Bk12",
-     title: "Frankenstein",
-     author: "Mary Shelly",
-     pYear:1818,
-     genre:"Horror",
-     status: "Available",
-     coverUrl:"/images/frankenstein.jpg"
-    },
-    {
-     id: "Bk13",
-     title: "The Shining",
-     author: "Stephen King",
-     pYear:1977,
-     genre:"Psychological Horror",
-     status: "Available",
-     coverUrl:"/images/shining.jpg"
-    },
-    {
-     id: "Bk14",
-     title: "It",
-     author: "Stephen King",
-     pYear:1986,
-     genre:"Horror",
-     status: "Rented",
-     coverUrl:"/images/it.jpg"
-    },
-    {
-     id: "Bk15",
-     title: "Pride and Prejudice",
-     author: "Jane AUsten",
-     pYear:1813,
-     genre:"Roamance",
-     status: "Available",
-     coverUrl:"/images/prideandprejudice.jpg"
-    },
-    {
-     id: "Bk16",
-     title: "The Notebook",
-     author: "Nicholos Sparks",
-     pYear:1996,
-     genre:"Romance",
-     status: "Available",
-     coverUrl:"/images/notebook.jpg"
-    },
-    {
-     id: "Bk17",
-     title: "The Da Vinci Code",
-     author: "Dan Brown",
-     pYear:2003,
-     genre:"Action Thriller",
-     status: "Available",
-     coverUrl:"/images/davinci.jpg"
-    },
-    {
-     id: "Bk18",
-     title: "Mission Impossible",
-     author: "Jim Phelps",
-     pYear:1967,
-     genre:"Action Spy Thriller",
-     status: "Available",
-     coverUrl:"/images/mission.jpg"
-    },
-    {
-     id: "Bk19",
-     title: "Dune",
-     author: "Frank Herbert",
-     pYear:1965,
-     genre:"Science Fiction",
-     status: "Rented",
-     coverUrl:"/images/dune.jpg"
-    },
-    {
-     id: "Bk20",
-     title: "1984",
-     author: "George Orwell",
-     pYear:1949,
-     genre:"Dystopian Science Fiction",
-     status: "Rented",
-     coverUrl:"/images/ninteen.jpg"
-    },
-  ];
+import SearchIcon from '@mui/icons-material/Search';
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+import { Link } from 'react-router-dom';
+
+function Home() {
+  const [books, setBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
+
+  const [search, setSearch] = useState('');
+
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
+
+  const [genreFilter, setGenreFilter] = useState('');
+  const [ratingFilter, setRatingFilter] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
+  const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/books')
+      .then((res) => res.json())
+      .then((data) => {
+        setBooks(data);
+        setFilteredBooks(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    let updated = [...books];
+
+    if (search) {
+      updated = updated.filter((book) =>
+        book.title.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (genreFilter) {
+      updated = updated.filter(
+        (book) =>
+          book.genre?.toLowerCase() === genreFilter.toLowerCase()
+      );
+    }
+
+    if (ratingFilter) {
+      updated = updated.filter(
+        (book) => (book.averageRating || 0) >= Number(ratingFilter)
+      );
+    }
+
+    if (minPrice !== '') {
+      updated = updated.filter(
+        (book) => Number(book.price) >= Number(minPrice)
+      );
+    }
+
+    if (maxPrice !== '') {
+      updated = updated.filter(
+        (book) => Number(book.price) <= Number(maxPrice)
+      );
+    }
+
+    if (sortBy) {
+      updated.sort((a, b) => {
+        let valueA, valueB;
+
+        if (sortBy === 'price') {
+          valueA = a.price || 0;
+          valueB = b.price || 0;
+        } else if (sortBy === 'rating') {
+          valueA = a.averageRating || 0;
+          valueB = b.averageRating || 0;
+        } else if (sortBy === 'likes') {
+          valueA = a.likes || 0;
+          valueB = b.likes || 0;
+        } else if (sortBy === 'comments') {
+          valueA = a.comments?.length || 0;
+          valueB = b.comments?.length || 0;
+        } else if (sortBy === 'alphabetical') {
+          valueA = a.title?.toLowerCase() || '';
+          valueB = b.title?.toLowerCase() || '';
+        } else if (sortBy === 'date') {
+          valueA = new Date(a.createdAt);
+          valueB = new Date(b.createdAt);
+        }
+
+        if (sortOrder === 'asc') return valueA > valueB ? 1 : -1;
+        return valueA < valueB ? 1 : -1;
+      });
+    }
+
+    setFilteredBooks(updated);
+  }, [
+    books,
+    search,
+    sortBy,
+    sortOrder,
+    genreFilter,
+    ratingFilter,
+    minPrice,
+    maxPrice
+  ]);
+
   return (
-    <Box sx={{ bgcolor: "#f8f9fa", minHeight: "100vh", py: 6 }}>
-      <Container maxWidth="lg">
-        
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: "#1a1a1a" }}>
-            Discover Books
-          </Typography>
-        </Box> 
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+        Library Catalog
+      </Typography>
 
-        <Box
+      {/* TOP BAR */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+          gap: 2
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<FilterListIcon />}
+          onClick={() => setShowFilters(!showFilters)}
+          size="small"
+        >
+          Filters
+        </Button>
+
+        <Box sx={{ width: 350 }}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Search books"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </Box>
+      </Box>
+
+      {/* FILTER PANEL */}
+      <Collapse in={showFilters}>
+        <Paper
           sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              md: "repeat(2, 1fr)"
-            },
-            gap: 3
+            p: 2,
+            mb: 3,
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 2
           }}
         >
-          {books.map((book) => (
-            <Box
-              key={book.id}
-              sx={{
-                borderRadius: "12px",
-                overflow: "hidden",
-                boxShadow: "0px 4px 12px rgba(0,0,0,0.05)",
-                bgcolor: "#fff",
-                transition: "0.2s",
-                display: "flex", 
-                height: "180px", 
-                border: "1px solid #f0f0f0",
-                "&:hover": {
-                  transform: "translateY(-3px)",
-                  boxShadow: "0px 6px 16px rgba(0,0,0,0.1)"
-                }
-              }}
-            >
-              <Box 
-                sx={{ 
-                  width: "130px", 
-                  height: "100%", 
-                  overflow: "hidden", 
-                  bgcolor: "#ffffff", 
-                  position: "relative",
-                  flexShrink: 0
-                }}
-              >
-                <Chip
-                  label={book.status}
-                  color={book.status === "Available" ? "success" : "error"}
-                  size="small"
-                  sx={{ 
-                    position: "absolute", 
-                    bottom: 8, 
-                    left: 8, 
-                    fontWeight: 700,
-                    fontSize: "0.65rem",
-                    height: "20px",
-                    boxShadow: "0px 2px 6px rgba(0,0,0,0.2)", 
-                    zIndex: 2,
-                    borderRadius: "4px"
-                  }}
-                />
-                <img
-                  src={book.coverUrl} 
-                  alt={book.title}
-                  style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                />
-              </Box>
-              <Box sx={{ p: 2, display: "flex", flexDirection: "column", justifyContent: "space-between", flexGrow: 1, minWidth: 0 }}>
-                <Box>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      fontWeight: 700,
-                      color: "#1a1a1a",
-                      lineHeight: 1.2,
-                      mb: 0.5,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden"
-                    }}
-                  >
-                    {book.title}
-                  </Typography>
-                  
-                  <Typography variant="body2" color="text.secondary" noWrap>
-                    {book.author}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1 }}>
-                  <Typography variant="caption" color="text.disabled">
-                    Year: {book.pYear}
-                  </Typography>
+          {/* GENRE */}
+          <TextField
+            select
+            size="small"
+            label="Genre"
+            value={genreFilter}
+            onChange={(e) => setGenreFilter(e.target.value)}
+            sx={{ minWidth: 150 }}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="Fiction">Fiction</MenuItem>
+            <MenuItem value="Fantasy">Fantasy</MenuItem>
+            <MenuItem value="Mystery">Mystery</MenuItem>
+            <MenuItem value="Romance">Romance</MenuItem>
+            <MenuItem value="Science Fiction">Science Fiction</MenuItem>
+            <MenuItem value="Non-Fiction">Non-Fiction</MenuItem>
+            <MenuItem value="Biography">Biography</MenuItem>
+            <MenuItem value="History">History</MenuItem>
+            <MenuItem value="Self-Help">Self-Help</MenuItem>
+            <MenuItem value="Technology">Technology</MenuItem>
+            <MenuItem value="Programming">Programming</MenuItem>
+            <MenuItem value="Education">Education</MenuItem>
+            <MenuItem value="Philosophy">Philosophy</MenuItem>
+            <MenuItem value="Psychology">Psychology</MenuItem>
+            <MenuItem value="Horror">Horror</MenuItem>
+            <MenuItem value="Thriller">Thriller</MenuItem>
+            <MenuItem value="Poetry">Poetry</MenuItem>
+            <MenuItem value="Comics">Comics</MenuItem>
+          </TextField>
 
-                  <Button 
-                    variant="contained" 
-                    size="small"
-                    onClick={() => navigate('/bookdetails', { state: book })}
-                    sx={{ 
-                      fontWeight: 600, 
-                      bgcolor: "#1a1a1a",
-                      color: "#fff",
-                      px: 2,
-                      textTransform: "none",
-                      borderRadius: "6px",
-                      "&:hover": {
-                        bgcolor: "#333333"
-                      }
-                    }}
-                  >
-                    Details
-                  </Button>
-                </Box>
+          {/* RATING */}
+          <TextField
+            select
+            size="small"
+            label="Rating"
+            value={ratingFilter}
+            onChange={(e) => setRatingFilter(e.target.value)}
+            sx={{ minWidth: 150 }}
+          >
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="1">1★+</MenuItem>
+            <MenuItem value="2">2★+</MenuItem>
+            <MenuItem value="3">3★+</MenuItem>
+            <MenuItem value="4">4★+</MenuItem>
+            <MenuItem value="5">5★</MenuItem>
+          </TextField>
 
-              </Box>
+          {/* PRICE */}
+          <TextField
+            size="small"
+            label="Min Price"
+            type="number"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+          />
 
-            </Box>
-          ))}
-        </Box>
-      </Container>
-    </Box>
+          <TextField
+            size="small"
+            label="Max Price"
+            type="number"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+          />
+
+          {/* SORT BY */}
+          <TextField
+            select
+            size="small"
+            label="Sort By"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            sx={{ minWidth: 150 }}
+          >
+            <MenuItem value="">None</MenuItem>
+            <MenuItem value="price">Price</MenuItem>
+            <MenuItem value="rating">Rating</MenuItem>
+            <MenuItem value="likes">Likes</MenuItem>
+            <MenuItem value="comments">Comments</MenuItem>
+            <MenuItem value="alphabetical">A-Z</MenuItem>
+            <MenuItem value="date">Date</MenuItem>
+          </TextField>
+
+          {/* ORDER */}
+          <TextField
+            select
+            size="small"
+            label="Order"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+            sx={{ minWidth: 150 }}
+          >
+            <MenuItem value="asc">Asc</MenuItem>
+            <MenuItem value="desc">Desc</MenuItem>
+          </TextField>
+        </Paper>
+      </Collapse>
+
+      {/* BOOK GRID */}
+      <Grid container spacing={3}>
+        {filteredBooks.map((book) => (
+          <Grid item xs={12} sm={6} md={4} key={book._id}>
+            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <CardMedia
+                component="img"
+                height="280"
+                image={book.coverImage || 'https://via.placeholder.com/300x400'}
+                alt={book.title}
+              />
+
+              <CardContent sx={{ flexGrow: 1 }}>
+                <Typography variant="h6">{book.title}</Typography>
+                <Typography color="text.secondary">
+                  Author: {book.author}
+                </Typography>
+                <Typography color="text.secondary">
+                  Genre: {book.genre}
+                </Typography>
+                <Typography color="text.secondary">
+                  ₹{book.price}
+                </Typography>
+              </CardContent>
+
+              <CardActions>
+                <Button
+                  component={Link}
+                  to={`/book/${book._id}`}
+                  variant="contained"
+                  fullWidth
+                >
+                  View Details
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
-};
+}
 
 export default Home;

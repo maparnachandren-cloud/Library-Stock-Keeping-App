@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import {
   Routes,
   Route,
@@ -11,19 +12,24 @@ import {
 } from '@mui/material';
 
 import Navbar from './components/Navbar/Navbar';
+
 import Welcome from './components/Welcome/Welcome';
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
+
 import Home from './components/Home/Home';
 import BookDetails from './components/BookDetails/BookDetails';
 import UserProfile from './components/UserProfile/UserProfile';
+
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import AdminAccess from './components/AdminAccess/AdminAccess';
 import AddBook from './components/AddBook/AddBook';
 
 const App = () => {
 
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem('currentUser')) || null
+  );
 
   return (
     <>
@@ -56,9 +62,6 @@ const App = () => {
             path="/signup"
             element={<Signup />}
           />
-
-          {/* Relaxed Routes */}
-          {/* Any logged-in user can access */}
 
           <Route
             path="/home"
@@ -96,8 +99,6 @@ const App = () => {
             }
           />
 
-          {/* Strict Admin Routes */}
-
           <Route
             path="/admin/dashboard"
             element={
@@ -123,6 +124,11 @@ const App = () => {
                 ? <AddBook />
                 : <Navigate to="/login" />
             }
+          />
+
+          <Route
+            path="*"
+            element={<Navigate to="/" />}
           />
 
         </Routes>

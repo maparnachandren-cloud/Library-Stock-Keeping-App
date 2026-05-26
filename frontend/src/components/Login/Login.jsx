@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+
+import {
+  useNavigate,
+  Link
+} from 'react-router-dom';
 
 import {
   Box,
@@ -13,12 +17,15 @@ import {
 const Login = ({ setCurrentUser }) => {
 
   const [email, setEmail] = useState('');
+
   const [password, setPassword] = useState('');
+
   const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
+
     e.preventDefault();
 
     try {
@@ -43,6 +50,11 @@ const Login = ({ setCurrentUser }) => {
 
       if (res.ok) {
 
+        localStorage.setItem(
+          'currentUser',
+          JSON.stringify(data.user)
+        );
+
         setCurrentUser(data.user);
 
         navigate(
@@ -53,14 +65,17 @@ const Login = ({ setCurrentUser }) => {
 
       } else {
 
-        setError(data.message || 'Invalid credentials');
-
+        setError(
+          data.message ||
+          'Invalid credentials'
+        );
       }
 
     } catch {
 
-      setError('Server connection failed.');
-
+      setError(
+        'Server connection failed.'
+      );
     }
   };
 
@@ -78,12 +93,14 @@ const Login = ({ setCurrentUser }) => {
       </Typography>
 
       {error && (
+
         <Alert
           severity="error"
           sx={{ mb: 2 }}
         >
           {error}
         </Alert>
+
       )}
 
       <Box
@@ -102,7 +119,9 @@ const Login = ({ setCurrentUser }) => {
           required
           fullWidth
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
         />
 
         <TextField
@@ -111,7 +130,9 @@ const Login = ({ setCurrentUser }) => {
           required
           fullWidth
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
         />
 
         <Button
@@ -119,7 +140,7 @@ const Login = ({ setCurrentUser }) => {
           variant="contained"
           fullWidth
         >
-          Submit
+          Login
         </Button>
 
       </Box>
