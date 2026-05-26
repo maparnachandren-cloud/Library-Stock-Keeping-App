@@ -1,25 +1,147 @@
 const express = require('express');
+
 const router = express.Router();
+
 const User = require('../models/User');
 
+
+
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  if (email === "admin@library.com" && password === "admin123") 
-    return res.json({ user: { _id: "ADMIN_ROOT", name: "System Admin", email, role: "admin" } });
-  
+
+  const {
+    email,
+    password
+  } = req.body;
+
+
+
+  if (
+    email === 'admin@library.com' &&
+    password === 'admin123'
+  ) {
+
+    return res.json({
+      user: {
+        _id: 'ADMIN_ROOT',
+        name: 'System Admin',
+        email,
+        role: 'admin'
+      }
+    });
+  }
+
+
+
   try {
-    const user = await User.findOne({ email, password });
-    if (!user) return res.status(401).json({ message: "Invalid credentials" });
-    if (user.isBlocked) return res.status(403).json({ message: "Account is blocked" });
+
+    const user = await User.findOne({
+      email,
+      password
+    });
+
+    if (!user) {
+
+      return res.status(401).json({
+        message: 'Invalid credentials'
+      });
+    }
+
+    if (user.isBlocked) {
+
+      return res.status(403).json({
+        message: 'Account is blocked'
+      });
+    }
+
     res.json({ user });
-  } catch (err) { res.status(500).json({ message: "Server Error" }); }
+
+  } catch {
+
+    res.status(500).json({
+      message: 'Server Error'
+    });
+  }
+
 });
 
+
+
 router.post('/signup', async (req, res) => {
+
   try {
-    const newUser = new User(req.body);
+
+    const {
+      name,
+      email,
+      age,
+      phone,
+      education,
+      password
+    } = req.body;
+
+
+
+    if (
+      !name ||
+      !email ||
+      !age ||
+      !phone ||
+      !education ||
+      !password
+    ) {
+
+      return res.status(400).json({
+        message: 'All fields are required'
+      });
+    }
+
+
+
+    const existingUser = await User.findOne({
+      email
+    });
+
+    if (existingUser) {
+
+      return res.status(400).json({
+        message: 'Email already exists'
+      });
+    }
+
+
+
+    const newUser = new User({
+
+      name,
+      email,
+      age,
+      phone,
+      education,
+      password,
+
+      role: 'user'
+
+    });
+
+
+
     await newUser.save();
-    res.status(201).json({ message: "Created" });
-  } catch { res.status(400).json({ message: "Email already exists" }); }
+
+
+
+    res.status(201).json({
+      message: 'Account created successfully'
+    });
+
+  } catch {
+
+    res.status(500).json({
+      message: 'Server Error'
+    });
+  }
+
 });
+
+
+
 module.exports = router;
