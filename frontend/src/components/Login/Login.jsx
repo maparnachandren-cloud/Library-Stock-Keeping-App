@@ -1,120 +1,139 @@
-import React, { useState } from 'react'
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+
 import {
   Box,
-  Button,
-  Container,
   TextField,
+  Button,
   Typography,
-  Link,
-  Paper
-} from '@mui/material'
+  Container,
+  Alert
+} from '@mui/material';
 
-import { useNavigate } from 'react-router-dom'
+const Login = ({ setCurrentUser }) => {
 
-const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+    try {
 
-  const handleLogin = () => {
+      const res = await fetch(
+        'http://localhost:5000/api/auth/login',
+        {
+          method: 'POST',
 
-    if (
-      formData.email === 'user@gmail.com' &&
-      formData.password === 'user123'
-    ) {
-      navigate('/home');
-    }
+          headers: {
+            'Content-Type': 'application/json'
+          },
 
-    else if (
-      formData.email === 'admin@gmail.com' &&
-      formData.password === 'admin123'
-    ) {
-      navigate('/admindashboard');
-    }
+          body: JSON.stringify({
+            email,
+            password
+          }),
+        }
+      );
 
-    else {
-      alert('Invalid Email or Password');
+      const data = await res.json();
+
+      if (res.ok) {
+
+        setCurrentUser(data.user);
+
+        navigate(
+          data.user.role === 'admin'
+            ? '/admin/dashboard'
+            : '/home'
+        );
+
+      } else {
+
+        setError(data.message || 'Invalid credentials');
+
+      }
+
+    } catch {
+
+      setError('Server connection failed.');
+
     }
   };
 
   return (
-
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f4f6f8'
-      }}
+    <Container
+      maxWidth="xs"
+      sx={{ mt: 8 }}
     >
 
-      <Container maxWidth="sm">
+      <Typography
+        variant="h4"
+        gutterBottom
+      >
+        Login
+      </Typography>
 
-        <Paper elevation={8} sx={{ p: 5, borderRadius: 5 }}>
+      {error && (
+        <Alert
+          severity="error"
+          sx={{ mb: 2 }}
+        >
+          {error}
+        </Alert>
+      )}
 
-          <Typography variant="h3" align="center" fontWeight="bold" gutterBottom>
-            Login
-          </Typography>
+      <Box
+        component="form"
+        onSubmit={handleLogin}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2
+        }}
+      >
 
-          <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>
-            Enter your credentials to access your account
-          </Typography>
+        <TextField
+          label="Email"
+          type="email"
+          required
+          fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-          <TextField
-            fullWidth
-            label="Email Address"
-            name="email"
-            type="email"
-            margin="normal"
-            value={formData.email}
-            onChange={handleChange}
-          />
+        <TextField
+          label="Password"
+          type="password"
+          required
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-          <TextField
-            fullWidth
-            label="Password"
-            name="password"
-            type="password"
-            margin="normal"
-            value={formData.password}
-            onChange={handleChange}
-          />
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+        >
+          Submit
+        </Button>
 
-          <Button
-            fullWidth
-            variant="contained"
-            size="large"
-            sx={{ mt: 4, py: 1.5, borderRadius: 3, fontSize: '1rem', textTransform: 'none' }}
-            onClick={handleLogin}
-          >
-            Login
-          </Button>
+      </Box>
 
-          <Typography align="center" sx={{ mt: 4 }}>
-            Not a registered user?{' '}
-            <Link component="button" variant="body1" underline="hover" onClick={() => navigate('/signup')}>
-              Signup
-            </Link>
-          </Typography>
+      <Typography sx={{ mt: 2 }}>
 
-        </Paper>
+        <Link to="/signup">
+          Not a Registered User?
+        </Link>
 
-      </Container>
+      </Typography>
 
-    </Box>
-  )
-}
+    </Container>
+  );
+};
 
-export default Login
+export default Login;

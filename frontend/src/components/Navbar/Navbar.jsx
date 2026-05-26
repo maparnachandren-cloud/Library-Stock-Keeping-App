@@ -1,165 +1,110 @@
-import React from 'react'
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 
-const Navbar = () => {
-
+const Navbar = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const isLoginPage = location.pathname === '/login';
-  const isSignupPage = location.pathname === '/signup';
-  const isAdminDashboard = location.pathname === '/admindashboard';
-  const isHomePage = location.pathname === '/home';
-  const isBookDetailsPage = location.pathname === '/bookdetails';
-  const isAddBookPage = location.pathname === '/addbook';
-  const isProfilePage = location.pathname === '/userprofile';
-  const isAdminAccessPage = location.pathname === '/adminaccess';
+  const getLogoLink = () => {
+    if (!currentUser) return '/';
+
+    return currentUser.role === 'admin'
+      ? '/admin/dashboard'
+      : '/home';
+  };
 
   return (
+    <AppBar position="static">
+      <Toolbar>
 
-    <Box sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="h6"
+          component={Link}
+          to={getLogoLink()}
+          sx={{
+            flexGrow: 1,
+            textDecoration: 'none',
+            color: 'inherit'
+          }}
+        >
+          Library System
+        </Typography>
 
-      <AppBar position="static">
+        <Box sx={{ display: 'flex', gap: 1 }}>
 
-        <Toolbar>
+          {currentUser ? (
+            <>
+              {currentUser.role === 'admin' ? (
+                <>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/admin/dashboard"
+                  >
+                    Inventory
+                  </Button>
 
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-          </IconButton>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/admin/users"
+                  >
+                    Access
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/home"
+                  >
+                    Catalog
+                  </Button>
 
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1 }}
-          >
-            Library and Stock App
-          </Typography>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/profile"
+                  >
+                    Profile
+                  </Button>
+                </>
+              )}
 
-          {
-            isHomePage && (
               <Button
                 color="inherit"
-                onClick={() => navigate('/userprofile')}
-              >
-                My Profile
-              </Button>
-            )
-          }
-
-          {
-            isAdminDashboard && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/adminaccess')}
-              >
-                Admin Access
-              </Button>
-            )
-          }
-
-          {
-            isBookDetailsPage && (
-              <>
-                <Button
-                  color="inherit"
-                  onClick={() => navigate('/home')}
-                >
-                  Home
-                </Button>
-
-                <Button
-                  color="inherit"
-                  onClick={() => navigate('/userprofile')}
-                >
-                  My Profile
-                </Button>
-              </>
-            )
-          }
-
-          {
-            isAddBookPage && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/admindashboard')}
-              >
-                Admin Dashboard
-              </Button>
-            )
-          }
-
-          {
-            isProfilePage && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/home')}
-              >
-                Home
-              </Button>
-            )
-          }
-
-          {
-            isAdminAccessPage && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/admindashboard')}
-              >
-                Admin Dashboard
-              </Button>
-            )
-          }
-
-          {
-            isLoginPage && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/signup')}
-              >
-                Signup
-              </Button>
-            )
-          }
-
-          {
-            isSignupPage && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/login')}
-              >
-                Login
-              </Button>
-            )
-          }
-
-          {
-            !isLoginPage && !isSignupPage && (
-              <Button
-                color="inherit"
-                onClick={() => navigate('/login')}
+                onClick={() => {
+                  setCurrentUser(null);
+                  navigate('/login');
+                }}
               >
                 Logout
               </Button>
-            )
-          }
+            </>
+          ) : (
+            <>
+              <Button
+                color="inherit"
+                component={Link}
+                to="/login"
+              >
+                Login
+              </Button>
 
-        </Toolbar>
+              <Button
+                color="inherit"
+                component={Link}
+                to="/signup"
+              >
+                Signup
+              </Button>
+            </>
+          )}
 
-      </AppBar>
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
 
-    </Box>
-  )
-}
-
-export default Navbar
+export default Navbar;
