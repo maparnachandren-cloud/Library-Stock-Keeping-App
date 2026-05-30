@@ -143,6 +143,7 @@ const Signup = () => {
         <TextField
           label="Phone Number"
           name="phone"
+          type="number"
           required
           fullWidth
           value={formData.phone}

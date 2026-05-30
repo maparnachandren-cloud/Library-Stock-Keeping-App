@@ -153,6 +153,7 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
             />
             <TextField
               label="Phone"
+              type="number"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             />
