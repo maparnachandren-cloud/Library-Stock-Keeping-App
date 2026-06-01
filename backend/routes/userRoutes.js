@@ -27,6 +27,28 @@ router.get('/:id', async (req, res) => {
 // UPDATE USER PROFILE
 router.put('/:id', async (req, res) => {
   try {
+    const { name, age, phone, email } = req.body;
+
+    // Name validation
+    if (name && !/^[a-zA-Z\s]+$/.test(name)) {
+      return res.status(400).json({ message: 'Name should only contain letters' });
+    }
+
+    // Age validation
+    if (age && (Number(age) < 1 || Number(age) > 120)) {
+      return res.status(400).json({ message: 'Age must be between 1 and 120' });
+    }
+
+    // Phone validation
+    if (phone && !/^\d{10}$/.test(phone.toString())) {
+      return res.status(400).json({ message: 'Phone number must be exactly 10 digits' });
+    }
+
+    // Email format
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -60,7 +82,6 @@ router.put('/:id/block', async (req, res) => {
     );
     if (!updatedUser) return res.status(404).json({ message: 'User not found' });
     res.json(updatedUser);
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

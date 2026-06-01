@@ -1,127 +1,69 @@
 import { useState } from 'react';
-
+import { useNavigate, Link } from 'react-router-dom';
 import {
-  useNavigate,
-  Link
-} from 'react-router-dom';
-
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Alert
+  Box, TextField, Button, Typography, Container, Alert
 } from '@mui/material';
 
 const Login = ({ setCurrentUser }) => {
-
   const [email, setEmail] = useState('');
-
   const [password, setPassword] = useState('');
-
   const [error, setError] = useState('');
-
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-
     e.preventDefault();
+    setError('');
+
+    // Frontend validation
+    if (!email.trim() || !password.trim()) {
+      setError('Email and password are required');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
 
     try {
-
-      const res = await fetch(
-        'http://localhost:5000/api/auth/login',
-        {
-          method: 'POST',
-
-          headers: {
-            'Content-Type': 'application/json'
-          },
-
-          body: JSON.stringify({
-            email,
-            password
-          }),
-        }
-      );
+      const res = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
       const data = await res.json();
 
       if (res.ok) {
-
-        localStorage.setItem(
-          'currentUser',
-          JSON.stringify(data.user)
-        );
-
+        localStorage.setItem('currentUser', JSON.stringify(data.user));
         setCurrentUser(data.user);
-
-        navigate(
-          data.user.role === 'admin'
-            ? '/admin/dashboard'
-            : '/home'
-        );
-
+        navigate(data.user.role === 'admin' ? '/admin/dashboard' : '/home');
       } else {
-
-        setError(
-          data.message ||
-          'Invalid credentials'
-        );
+        setError(data.message || 'Invalid credentials');
       }
-
     } catch {
-
-      setError(
-        'Server connection failed.'
-      );
+      setError('Server connection failed. Make sure backend is running.');
     }
   };
 
   return (
-    <Container
-      maxWidth="xs"
-      sx={{ mt: 8 }}
-    >
+    <Container maxWidth="xs" sx={{ mt: 8 }}>
+      <Typography variant="h4" gutterBottom>Login</Typography>
 
-      <Typography
-        variant="h4"
-        gutterBottom
-      >
-        Login
-      </Typography>
-
-      {error && (
-
-        <Alert
-          severity="error"
-          sx={{ mb: 2 }}
-        >
-          {error}
-        </Alert>
-
-      )}
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <Box
         component="form"
         onSubmit={handleLogin}
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2
-        }}
+        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
       >
-
         <TextField
           label="Email"
           type="email"
           required
           fullWidth
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <TextField
@@ -130,29 +72,17 @@ const Login = ({ setCurrentUser }) => {
           required
           fullWidth
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-        >
+        <Button type="submit" variant="contained" fullWidth>
           Login
         </Button>
-
       </Box>
 
       <Typography sx={{ mt: 2 }}>
-
-        <Link to="/signup">
-          Not a Registered User?
-        </Link>
-
+        <Link to="/signup">Not a Registered User? Sign up</Link>
       </Typography>
-
     </Container>
   );
 };
