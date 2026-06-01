@@ -26,9 +26,6 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
               <Button color="inherit" component={Link} to="/login">
                 Login
               </Button>
-              <Button color="inherit" component={Link} to="/signup">
-                Signup
-              </Button>
             </>
           )}
 
