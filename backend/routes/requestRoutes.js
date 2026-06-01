@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
     const book = await Book.findById(bookId);
     if (!book) return res.status(404).json({ message: 'Book not found' });
     if (!book.isAvailable) {
-      return res.status(400).json({ message: 'Book is not available' });
+      return res.status(400).json({ message: 'Book is not available for rent' });
     }
 
     const newRequest = await new Request({ userId, bookId }).save();
@@ -52,6 +52,10 @@ router.put('/:id', async (req, res) => {
     const validStatuses = ['Approved', 'Rejected', 'Returned'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    if (!bookId) {
+      return res.status(400).json({ message: 'bookId is required' });
     }
 
     const updated = await Request.findByIdAndUpdate(
@@ -75,11 +79,18 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE REQUEST (User cancels pending)
+// DELETE REQUEST — also restores book availability if pending
 router.delete('/:id', async (req, res) => {
   try {
-    const deleted = await Request.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Request not found' });
+    const request = await Request.findById(req.params.id);
+    if (!request) return res.status(404).json({ message: 'Request not found' });
+
+    // If request was Approved and user cancels, restore availability
+    if (request.status === 'Approved') {
+      await Book.findByIdAndUpdate(request.bookId, { isAvailable: true });
+    }
+
+    await Request.findByIdAndDelete(req.params.id);
     res.json({ message: 'Request cancelled' });
   } catch (err) {
     res.status(500).json({ message: err.message });
