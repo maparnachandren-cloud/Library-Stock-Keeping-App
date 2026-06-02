@@ -25,6 +25,40 @@ import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import AdminAccess from './components/AdminAccess/AdminAccess';
 import AddBook from './components/AddBook/AddBook';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  palette: {
+    primary:   { main: '#1a3c5e', light: '#2a5f94', contrastText: '#fff' },
+    secondary: { main: '#e8a04b', contrastText: '#1c1c1c' },
+    background:{ default: '#f8f5f0', paper: '#ffffff' },
+    success:   { main: '#2d7a4f' },
+    error:     { main: '#c0392b' },
+  },
+  typography: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    h4: { fontFamily: "'Playfair Display', serif", fontWeight: 700 },
+    h5: { fontFamily: "'Playfair Display', serif", fontWeight: 600 },
+    h6: { fontFamily: "'Playfair Display', serif", fontWeight: 600 },
+  },
+  shape: { borderRadius: 12 },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        containedPrimary: {
+          background: 'linear-gradient(135deg, #1a3c5e 0%, #2a5f94 100%)',
+          boxShadow: '0 4px 14px rgba(26,60,94,0.3)',
+        },
+      }
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: { background: 'linear-gradient(135deg, #1a3c5e, #0f2540)' }
+      }
+    }
+  }
+});
+
 const App = () => {
 
   const [currentUser, setCurrentUser] = useState(
@@ -33,6 +67,7 @@ const App = () => {
 
   return (
     <>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
 
       <Navbar
@@ -40,7 +75,7 @@ const App = () => {
         setCurrentUser={setCurrentUser}
       />
 
-      <Box sx={{ p: 3 }}>
+     <Box sx={{ px: {xs:1.5,sm:2,md:3}, py:{xs:2,md:3} }}>
 
         <Routes>
 
@@ -134,6 +169,7 @@ const App = () => {
         </Routes>
 
       </Box>
+      </ThemeProvider>
     </>
   );
 };

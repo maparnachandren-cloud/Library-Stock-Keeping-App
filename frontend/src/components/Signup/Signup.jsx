@@ -103,50 +103,121 @@ const Signup = () => {
     }
   };
 
-  return (
-    <Container maxWidth="xs" sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom>Sign Up</Typography>
+ return (
+  <Box
+    sx={{
+      minHeight: 'calc(100vh - 64px)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      py: 4,
+      px: 2,
+    }}
+  >
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 500,
+        p: 3,
+        borderRadius: 5,
+        backdropFilter: 'blur(12px)',
+        background: 'rgba(10, 10, 40, 0.85)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+      }}
+    >
+      {/* Header */}
+      <Box sx={{ textAlign: 'center', mb: 3 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 700,
+            color: '#fff',
+            mb: 1,
+          }}
+        >
+          Join Nalanda Bookstore
+        </Typography>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        <Typography
+          sx={{
+            color: 'rgba(255,255,255,0.8)',
+          }}
+        >
+          Create your account and start exploring books
+        </Typography>
+      </Box>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
-      <Box component="form" onSubmit={handleSignup}
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-
+      <Box
+        component="form"
+        onSubmit={handleSignup}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <TextField
-          label="Name" name="name" required fullWidth
-          value={formData.name} onChange={handleChange}
-          helperText="Letters only"
+          label="Name"
+          name="name"
+          required
+          fullWidth
+          value={formData.name}
+          onChange={handleChange}
         />
 
         <TextField
-          label="Email" name="email" type="email" required fullWidth
-          value={formData.email} onChange={handleChange}
+          label="Email"
+          name="email"
+          type="email"
+          required
+          fullWidth
+          value={formData.email}
+          onChange={handleChange}
         />
 
         <TextField
-          label="Age" name="age" type="number" required fullWidth
-          value={formData.age} onChange={handleChange}
-          inputProps={{ min: 1, max: 120, step: 1 }}
-          helperText="Between 1 and 120"
+          label="Age"
+          name="age"
+          type="number"
+          required
+          fullWidth
+          value={formData.age}
+          onChange={handleChange}
         />
 
         <TextField
-          label="Phone Number" name="phone" type="number" required fullWidth
-          value={formData.phone} onChange={handleChange}
-          inputProps={{ min: 1000000000, max: 9999999999 }}
-          helperText="10 digit phone number"
+          label="Phone Number"
+          name="phone"
+          type="number"
+          required
+          fullWidth
+          value={formData.phone}
+          onChange={handleChange}
         />
 
         <TextField
-          label="Place" name="place" required fullWidth
-          value={formData.place} onChange={handleChange}
-          helperText="Letters, spaces, hyphens only"
+          label="Place"
+          name="place"
+          required
+          fullWidth
+          value={formData.place}
+          onChange={handleChange}
         />
 
         <FormControl fullWidth required>
           <InputLabel>Education</InputLabel>
-          <Select name="education" value={formData.education}
-            label="Education" onChange={handleChange}>
+          <Select
+            name="education"
+            value={formData.education}
+            label="Education"
+            onChange={handleChange}
+          >
             <MenuItem value="Engineering">Engineering</MenuItem>
             <MenuItem value="Medicine">Medicine</MenuItem>
             <MenuItem value="IT">IT</MenuItem>
@@ -155,31 +226,84 @@ const Signup = () => {
         </FormControl>
 
         <TextField
-          label="Password" name="password" type="password" required fullWidth
-          value={formData.password} onChange={handleChange}
-          helperText="Minimum 6 characters"
+          label="Password"
+          name="password"
+          type="password"
+          required
+          fullWidth
+          value={formData.password}
+          onChange={handleChange}
         />
 
         <TextField
-          label="Confirm Password" name="confirmPassword" type="text" required fullWidth
-          value={formData.confirmPassword} onChange={handleChange}
+          label="Confirm Password"
+          name="confirmPassword"
+          type="password"
+          required
+          fullWidth
+          value={formData.confirmPassword}
+          onChange={handleChange}
         />
 
         <FormControlLabel
-          control={
-            <Checkbox name="termsAccepted" checked={formData.termsAccepted} onChange={handleChange} />
-          }
-          label="If book is not returned or damaged, a fine will be charged."
-        />
+  control={
+    <Checkbox
+      name="termsAccepted"
+      checked={formData.termsAccepted}
+      onChange={handleChange}
+      sx={{
+        color: 'white',
+        '&.Mui-checked': {
+          color: '#ffffff',
+        },
+      }}
+    />
+  }
+  label="If book is not returned or damaged, a fine will be charged."
+  sx={{
+    color: 'white',
+  }}
+/>
 
-        <Button type="submit" variant="contained" fullWidth>Signup</Button>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+            py: 1.3,
+            borderRadius: 10,
+            fontWeight: 600,
+            bgcolor: '#ff5900',
+            '&:hover': {
+              bgcolor: '#402d0f',
+            },
+          }}
+        >
+          Create Account
+        </Button>
 
-        <Typography>
-          Already have an account? <Link to="/login">Login</Link>
+        <Typography
+          sx={{
+            textAlign: 'center',
+            color: '#fff',
+          }}
+        >
+          Already have an account?{' '}
+          <Link
+            to="/login"
+            style={{
+              color: '#e8a04b',
+              textDecoration: 'none',
+              fontWeight: 600,
+            }}
+          >
+            Login
+          </Link>
         </Typography>
       </Box>
-    </Container>
-  );
+    </Box>
+  </Box>
+);
 };
 
 export default Signup;
