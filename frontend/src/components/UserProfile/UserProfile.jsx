@@ -2,8 +2,21 @@ import { useState, useEffect } from 'react';
 import {
   Container, Typography, Box, TextField, Button,
   Table, TableBody, TableCell, TableHead, TableRow,
-  Paper, Chip, Alert
+  Paper, Chip, Alert, Grid, Card, CardContent, Divider, Avatar, TableContainer
 } from '@mui/material';
+import {
+  Edit as EditIcon,
+  Save as SaveIcon,
+  Close as CloseIcon,
+  Person as PersonIcon,
+  Email as EmailIcon,
+  Phone as PhoneIcon,
+  LocationOn as LocationOnIcon,
+  School as SchoolIcon,
+  MenuBook as BookIcon,
+  Cake as AgeIcon,
+  Refresh as RefreshIcon
+} from '@mui/icons-material';
 
 const UserProfile = ({ currentUser, setCurrentUser }) => {
   const [editMode, setEditMode] = useState(false);
@@ -123,122 +136,237 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
     return 'default';
   };
 
-  return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>My Profile</Typography>
+  // Helper style for forced black text in inputs
+  const textFieldStyles = {
+    '& .MuiInputBase-input': { color: '#000000' },
+    '& .MuiInputLabel-root': { color: '#333333' },
+    '& .MuiFormHelperText-root': { color: '#555555' }
+  };
 
-      <Typography sx={{ mb: 2 }} color="text.secondary">
-        Books Currently Rented: <strong>{rentedCount}</strong>
+  return (
+    <Container maxWidth="md" sx={{ mt: 5, mb: 5 }}>
+      {/* Header Area */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ color: '#000000' }}>
+          My Profile
+        </Typography>
+        <Chip 
+          icon={<BookIcon />} 
+          label={`Currently Rented: ${rentedCount}`} 
+          color="primary" 
+          variant="outlined" 
+          sx={{ fontWeight: 'bold', color: '#000000', borderColor: '#000000' }} 
+        />
+      </Box>
+
+      {successMsg && <Alert severity="success" sx={{ mb: 3 }}>{successMsg}</Alert>}
+
+      {/* Profile Card */}
+      <Card elevation={3} sx={{ mb: 5, borderRadius: 3, bgcolor: '#ffffff' }}>
+        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+          {!editMode ? (
+            <Grid container spacing={4} alignItems="center">
+              <Grid item xs={12} sm={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Avatar sx={{ width: 100, height: 100, bgcolor: 'primary.main', mb: 2, fontSize: '3rem', color: '#ffffff' }}>
+                  {formData.name ? formData.name.charAt(0).toUpperCase() : <PersonIcon fontSize="large" />}
+                </Avatar>
+                <Button 
+                  variant="contained" 
+                  startIcon={<EditIcon />} 
+                  onClick={() => setEditMode(true)} 
+                  sx={{ borderRadius: 2, textTransform: 'none' }}
+                >
+                  Edit Profile
+                </Button>
+              </Grid>
+              
+              <Grid item xs={12} sm={8}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Name</Typography>
+                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                      <PersonIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.name || 'Not provided'}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Email</Typography>
+                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                      <EmailIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.email || 'Not provided'}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Phone</Typography>
+                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                      <PhoneIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.phone || 'Not provided'}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Age</Typography>
+                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                      <AgeIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.age || 'Not provided'}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Location</Typography>
+                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                      <LocationOnIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.place || 'Not provided'}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Education</Typography>
+                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                      <SchoolIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.education || 'Not provided'}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          ) : (
+            <Box component="form" noValidate>
+              <Typography variant="h6" fontWeight="bold" mb={3} display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
+                <EditIcon color="primary" /> Update Your Details
+              </Typography>
+              
+              {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth label="Full Name" value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    helperText="Letters only"
+                    sx={textFieldStyles}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth label="Email Address" type="email" value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    sx={textFieldStyles}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth label="Phone Number" type="number" value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    inputProps={{ min: 1000000000, max: 9999999999 }}
+                    helperText="10 digit phone number"
+                    sx={textFieldStyles}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth label="Age" type="number" value={formData.age}
+                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    inputProps={{ min: 1, max: 120 }}
+                    helperText="Between 1 and 120"
+                    sx={textFieldStyles}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth label="Place" value={formData.place}
+                    helperText="Letters, spaces, hyphens only"
+                    onChange={(e) => setFormData({ ...formData, place: e.target.value })}
+                    sx={textFieldStyles}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth label="Education" value={formData.education}
+                    onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                    sx={textFieldStyles}
+                  />
+                </Grid>
+              </Grid>
+
+              <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
+                <Button 
+                  variant="outlined" 
+                  startIcon={<CloseIcon />} 
+                  onClick={() => { setEditMode(false); setError(''); }}
+                  sx={{ color: '#000000', borderColor: '#000000' }}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  variant="contained" 
+                  startIcon={<SaveIcon />} 
+                  onClick={handleUpdate}
+                >
+                  Save Changes
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </CardContent>
+      </Card>
+
+      <Divider sx={{ mb: 4, borderColor: '#cccccc' }} />
+
+      {/* Requests Section */}
+      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: '#000000' }}>
+        Rental History
       </Typography>
 
-      {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
-
-      <Paper sx={{ p: 3, mb: 4 }}>
-        {!editMode ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography><strong>Name:</strong> {formData.name}</Typography>
-            <Typography><strong>Email:</strong> {formData.email}</Typography>
-            <Typography><strong>Age:</strong> {formData.age}</Typography>
-            <Typography><strong>Phone:</strong> {formData.phone}</Typography>
-            <Typography><strong>Place:</strong> {formData.place}</Typography>
-            <Typography><strong>Education:</strong> {formData.education}</Typography>
-            <Button variant="contained" onClick={() => setEditMode(true)} sx={{ width: 'fit-content' }}>
-              Edit Profile
-            </Button>
-          </Box>
-        ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {error && <Alert severity="error">{error}</Alert>}
-
-            <TextField
-              label="Name" value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              helperText="Letters only"
-            />
-
-            <TextField
-              label="Email" type="email" value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            />
-
-            <TextField
-              label="Age" type="number" value={formData.age}
-              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-              inputProps={{ min: 1, max: 120 }}
-              helperText="Between 1 and 120"
-            />
-
-            <TextField
-              label="Phone" type="number" value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              inputProps={{ min: 1000000000, max: 9999999999 }}
-              helperText="10 digit phone number"
-            />
-
-            <TextField
-              label="Place" value={formData.place}
-              helperText="Letters, spaces, hyphens only"
-              onChange={(e) => setFormData({ ...formData, place: e.target.value })}
-            />
-
-            <TextField
-              label="Education" value={formData.education}
-              onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-            />
-
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button variant="contained" onClick={handleUpdate}>Save</Button>
-              <Button variant="outlined" onClick={() => { setEditMode(false); setError(''); }}>
-                Cancel
-              </Button>
-            </Box>
-          </Box>
-        )}
-      </Paper>
-
-      <Typography variant="h5" gutterBottom>My Requests</Typography>
-
       {requests.length === 0 ? (
-        <Typography color="text.secondary">No rental requests yet.</Typography>
+        <Paper elevation={0} sx={{ p: 4, textAlign: 'center', bgcolor: '#f5f5f5', borderRadius: 2 }}>
+          <BookIcon sx={{ fontSize: 48, color: '#666666', mb: 1 }} />
+          <Typography sx={{ color: '#333333' }}>You have no rental requests yet.</Typography>
+        </Paper>
       ) : (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Book</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {requests.map((req) => (
-              <TableRow key={req._id}>
-                <TableCell>{req.bookId?.title || 'Book deleted'}</TableCell>
-                <TableCell>{req.bookId?.author || '-'}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={req.status}
-                    color={getStatusChipColor(req.status)}
-                    size="small"
-                  />
-                </TableCell>
-                <TableCell>
-                  {req.status === 'Pending' && (
-                    <Button size="small" color="error" onClick={() => handleCancel(req._id)}>
-                      Cancel
-                    </Button>
-                  )}
-                  {req.status === 'Rejected' && req.bookId?._id && (
-                    <Button size="small" variant="contained"
-                      onClick={() => handleReRequest(req.bookId._id)}>
-                      Re-request
-                    </Button>
-                  )}
-                </TableCell>
+        <TableContainer component={Paper} elevation={2} sx={{ borderRadius: 2, bgcolor: '#ffffff' }}>
+          <Table sx={{ minWidth: 600 }}>
+            <TableHead sx={{ bgcolor: '#eeeeee' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', color: '#000000' }}>Book Title</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#000000' }}>Author</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#000000' }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'right', color: '#000000' }}>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {requests.map((req) => (
+                <TableRow key={req._id} hover>
+                  <TableCell sx={{ color: '#000000' }}>{req.bookId?.title || 'Book deleted'}</TableCell>
+                  <TableCell sx={{ color: '#000000' }}>{req.bookId?.author || '-'}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={req.status}
+                      color={getStatusChipColor(req.status)}
+                      size="small"
+                      sx={{ fontWeight: '500' }}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ textAlign: 'right' }}>
+                    {req.status === 'Pending' && (
+                      <Button 
+                        size="small" 
+                        color="error" 
+                        variant="outlined"
+                        startIcon={<CloseIcon />}
+                        onClick={() => handleCancel(req._id)}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                    {req.status === 'Rejected' && req.bookId?._id && (
+                      <Button 
+                        size="small" 
+                        variant="contained" 
+                        color="primary"
+                        startIcon={<RefreshIcon />}
+                        onClick={() => handleReRequest(req.bookId._id)}
+                      >
+                        Re-request
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Container>
   );

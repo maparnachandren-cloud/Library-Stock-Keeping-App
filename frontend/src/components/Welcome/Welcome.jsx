@@ -145,6 +145,7 @@ function Welcome() {
                   cursor: 'pointer',
                   height: '100%',
                   display: 'flex',
+                  bgcolor:'#d4d4d4',
                   flexDirection: 'column',
                   borderRadius: 3,
                   overflow: 'hidden',
@@ -180,6 +181,7 @@ function Welcome() {
                       fontSize: '1rem',
                       mb: 0.5,
                       fontWeight: 600,
+                      color:'#000000'
                     }}
                   >
                     {book.title}
@@ -187,7 +189,10 @@ function Welcome() {
 
                   <Typography
                     variant="body2"
-                    color="text.secondary"
+                    sx={{
+                      color: 'black',
+                      fontSize: '0.85rem',
+                    }}
                   >
                     {book.author}
                   </Typography>
@@ -197,8 +202,8 @@ function Welcome() {
                     size="small"
                     sx={{
                       mt: 1,
-                      bgcolor: '#f0ecff',
-                      color: '#6c47ff',
+                      bgcolor: '#ff6200',
+                      color: '#ffffff',
                       fontSize: '0.7rem',
                     }}
                   />
@@ -210,6 +215,7 @@ function Welcome() {
                     variant="contained"
                     sx={{
                       borderRadius: 8,
+                      bgcolor:'#006aff'
                     }}
                   >
                     Login to View
