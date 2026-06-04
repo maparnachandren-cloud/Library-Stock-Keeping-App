@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   Container, Typography, Box, TextField, Button,
   Table, TableBody, TableCell, TableHead, TableRow,
-  Paper, Chip, Alert, Grid, Card, CardContent, Divider, Avatar, TableContainer
+  Paper, Chip, Alert, Card, CardContent, Divider, Avatar, TableContainer
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -136,156 +136,224 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
     return 'default';
   };
 
-  // Helper style for forced black text in inputs
+  // Glassmorphism input styling
   const textFieldStyles = {
-    '& .MuiInputBase-input': { color: '#000000' },
-    '& .MuiInputLabel-root': { color: '#333333' },
-    '& .MuiFormHelperText-root': { color: '#555555' }
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      borderRadius: 2,
+      transition: 'all 0.3s ease',
+      '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.2)' },
+      '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.4)' },
+      '&.Mui-focused fieldset': { 
+        borderColor: '#64b5f6', // Light Monochromatic Blue
+        boxShadow: '0 0 10px rgba(100, 181, 246, 0.3)' 
+      },
+    },
+    '& .MuiInputBase-input': { color: '#e3f2fd', padding: '10px 14px' }, // Soft ice-blue text
+    '& .MuiInputLabel-root': { color: 'rgba(255, 255, 255, 0.6)' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#64b5f6' },
+    '& .MuiFormHelperText-root': { color: 'rgba(255, 255, 255, 0.5)', margin: '3px 14px 0' }
   };
 
+  // Reusable typography style for the details section
+  const detailLabelStyle = { color: 'rgba(255, 255, 255, 0.6)', mb: 0 };
+  const detailValueStyle = { color: '#e3f2fd', display: 'flex', alignItems: 'center', gap: 1 };
+  const detailIconStyle = { color: '#64b5f6' };
+
   return (
-    <Container maxWidth="md" sx={{ mt: 5, mb: 5 }}>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       {/* Header Area */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" fontWeight="bold" sx={{ color: '#000000' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h4" fontWeight="bold" sx={{ color: '#ffffff' }}>
           My Profile
         </Typography>
         <Chip 
-          icon={<BookIcon />} 
+          icon={<BookIcon style={{ color: '#64b5f6' }}/>} 
           label={`Currently Rented: ${rentedCount}`} 
-          color="primary" 
           variant="outlined" 
-          sx={{ fontWeight: 'bold', color: '#000000', borderColor: '#000000' }} 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: '#e3f2fd', 
+            borderColor: 'rgba(255, 255, 255, 0.3)',
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(5px)'
+          }} 
         />
       </Box>
 
-      {successMsg && <Alert severity="success" sx={{ mb: 3 }}>{successMsg}</Alert>}
+      {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
 
-      {/* Profile Card */}
-      <Card elevation={3} sx={{ mb: 5, borderRadius: 3, bgcolor: '#ffffff' }}>
-        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+      {/* Profile Card - Glassmorphism Applied */}
+      <Card
+  elevation={0}
+  sx={{
+    maxWidth: 550,
+    mx: 'auto',
+    mb: 4,
+    borderRadius: '28px',
+    background: 'rgba(255,255,255,0.08)',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255,255,255,0.15)',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.25)',
+    overflow: 'hidden'
+  }}
+>
+        <CardContent sx={{ p: { xs: 2, sm: 3 }, '&:last-child': { pb: { xs: 2, sm: 3 } }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+         <Box
+  sx={{
+    height: 5,
+    width: '100%',
+    borderRadius: 5,
+    mb: 3,
+    background:
+      'linear-gradient(90deg,#1565c0,#42a5f5,#90caf9)'
+  }}
+/> 
+          {/* Avatar Area with Glow */}
+          <Avatar
+  sx={{
+    width: 110,
+    height: 110,
+    mb: 2,
+    fontSize: '3rem',
+    color: '#fff',
+    background:
+      'linear-gradient(135deg,#1565c0,#42a5f5)',
+    border: '4px solid rgba(255,255,255,0.15)',
+    boxShadow:
+      '0 10px 30px rgba(25,118,210,0.4)',
+    transition: '0.3s',
+    '&:hover': {
+      transform: 'scale(1.05)'
+    }
+  }}
+>
+            {formData.name ? formData.name.charAt(0).toUpperCase() : <PersonIcon fontSize="large" />}
+          </Avatar>
+
           {!editMode ? (
-            <Grid container spacing={4} alignItems="center">
-              <Grid item xs={12} sm={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Avatar sx={{ width: 100, height: 100, bgcolor: 'primary.main', mb: 2, fontSize: '3rem', color: '#ffffff' }}>
-                  {formData.name ? formData.name.charAt(0).toUpperCase() : <PersonIcon fontSize="large" />}
-                </Avatar>
-                <Button 
-                  variant="contained" 
-                  startIcon={<EditIcon />} 
-                  onClick={() => setEditMode(true)} 
-                  sx={{ borderRadius: 2, textTransform: 'none' }}
-                >
-                  Edit Profile
-                </Button>
-              </Grid>
-              
-              <Grid item xs={12} sm={8}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Name</Typography>
-                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                      <PersonIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.name || 'Not provided'}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Email</Typography>
-                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                      <EmailIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.email || 'Not provided'}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Phone</Typography>
-                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                      <PhoneIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.phone || 'Not provided'}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Age</Typography>
-                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                      <AgeIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.age || 'Not provided'}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Location</Typography>
-                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                      <LocationOnIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.place || 'Not provided'}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography variant="caption" display="block" sx={{ color: '#333333' }}>Education</Typography>
-                    <Typography variant="body1" fontWeight="500" display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                      <SchoolIcon fontSize="small" sx={{ color: '#333333' }} /> {formData.education || 'Not provided'}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
+            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Button 
+                variant="outlined" 
+                startIcon={<EditIcon />} 
+                onClick={() => setEditMode(true)} 
+                size="small"
+                sx={{ 
+                  borderRadius: 2, 
+                  textTransform: 'none', 
+                  mb: 2, 
+                  color: '#64b5f6', 
+                  borderColor: 'rgba(100, 181, 246, 0.5)',
+                  '&:hover': { borderColor: '#64b5f6', background: 'rgba(100, 181, 246, 0.1)' }
+                }}
+              >
+                Edit Profile
+              </Button>
+
+              <Divider sx={{ width: '100%', mb: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+
+              {/* Tighter Vertical Stack of Details */}
+              <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 1.5, px: { xs: 0, sm: 2 } }}>
+                <Box>
+                  <Typography variant="body2" display="block" sx={detailLabelStyle}>Name</Typography>
+                  <Typography variant="body1" fontWeight="500" sx={detailValueStyle}>
+                    <PersonIcon fontSize="small" sx={detailIconStyle} /> {formData.name || 'Not provided'}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="body2" display="block" sx={detailLabelStyle}>Email</Typography>
+                  <Typography variant="body1" fontWeight="500" sx={detailValueStyle}>
+                    <EmailIcon fontSize="small" sx={detailIconStyle} /> {formData.email || 'Not provided'}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="body2" display="block" sx={detailLabelStyle}>Phone</Typography>
+                  <Typography variant="body1" fontWeight="500" sx={detailValueStyle}>
+                    <PhoneIcon fontSize="small" sx={detailIconStyle} /> {formData.phone || 'Not provided'}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="body2" display="block" sx={detailLabelStyle}>Age</Typography>
+                  <Typography variant="body1" fontWeight="500" sx={detailValueStyle}>
+                    <AgeIcon fontSize="small" sx={detailIconStyle} /> {formData.age || 'Not provided'}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="body2" display="block" sx={detailLabelStyle}>Location</Typography>
+                  <Typography variant="body1" fontWeight="500" sx={detailValueStyle}>
+                    <LocationOnIcon fontSize="small" sx={detailIconStyle} /> {formData.place || 'Not provided'}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="body2" display="block" sx={detailLabelStyle}>Education</Typography>
+                  <Typography variant="body1" fontWeight="500" sx={detailValueStyle}>
+                    <SchoolIcon fontSize="small" sx={detailIconStyle} /> {formData.education || 'Not provided'}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
           ) : (
-            <Box component="form" noValidate>
-              <Typography variant="h6" fontWeight="bold" mb={3} display="flex" alignItems="center" gap={1} sx={{ color: '#000000' }}>
-                <EditIcon color="primary" /> Update Your Details
+            <Box component="form" noValidate sx={{ width: '100%', mt: 1 }}>
+              <Typography variant="subtitle1" fontWeight="bold" mb={2} display="flex" alignItems="center" justifyContent="center" gap={1} sx={{ color: '#e3f2fd' }}>
+                <EditIcon sx={{ color: '#64b5f6' }} fontSize="small" />       Update Your Details
               </Typography>
               
-              {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+              {error && <Alert severity="error" sx={{ mb: 2, py: 0 }}>{error}</Alert>}
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth label="Full Name" value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    helperText="Letters only"
-                    sx={textFieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth label="Email Address" type="email" value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    sx={textFieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth label="Phone Number" type="number" value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    inputProps={{ min: 1000000000, max: 9999999999 }}
-                    helperText="10 digit phone number"
-                    sx={textFieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth label="Age" type="number" value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                    inputProps={{ min: 1, max: 120 }}
-                    helperText="Between 1 and 120"
-                    sx={textFieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth label="Place" value={formData.place}
-                    helperText="Letters, spaces, hyphens only"
-                    onChange={(e) => setFormData({ ...formData, place: e.target.value })}
-                    sx={textFieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth label="Education" value={formData.education}
-                    onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-                    sx={textFieldStyles}
-                  />
-                </Grid>
-              </Grid>
+              {/* Form Fields Array with Ghost Inputs */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <TextField
+                  fullWidth label="Full Name" value={formData.name} size="small"
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  helperText="Letters only" sx={textFieldStyles}
+                />
+                
+                <TextField
+                  fullWidth label="Email Address" type="email" value={formData.email} size="small"
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  sx={textFieldStyles}
+                />
+                
+                <TextField
+                  fullWidth label="Phone Number" type="number" value={formData.phone} size="small"
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  inputProps={{ min: 1000000000, max: 9999999999 }}
+                  helperText="10 digit phone number" sx={textFieldStyles}
+                />
+                
+                <TextField
+                  fullWidth label="Age" type="number" value={formData.age} size="small"
+                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                  inputProps={{ min: 1, max: 120 }}
+                  helperText="Between 1 and 120" sx={textFieldStyles}
+                />
+                
+                <TextField
+                  fullWidth label="Place" value={formData.place} size="small"
+                  helperText="Letters, spaces, hyphens only"
+                  onChange={(e) => setFormData({ ...formData, place: e.target.value })}
+                  sx={textFieldStyles}
+                />
+                
+                <TextField
+                  fullWidth label="Education" value={formData.education} size="small"
+                  onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                  sx={textFieldStyles}
+                />
+              </Box>
 
-              <Box sx={{ display: 'flex', gap: 2, mt: 4, justifyContent: 'flex-end' }}>
+              <Box sx={{ display: 'flex', gap: 2, mt: 3, justifyContent: 'center' }}>
                 <Button 
                   variant="outlined" 
                   startIcon={<CloseIcon />} 
                   onClick={() => { setEditMode(false); setError(''); }}
-                  sx={{ color: '#000000', borderColor: '#000000' }}
+                  size="small"
+                  sx={{ color: '#e3f2fd', borderColor: 'rgba(255,255,255,0.3)', '&:hover': { borderColor: '#ffffff' } }}
                 >
                   Cancel
                 </Button>
@@ -293,6 +361,8 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
                   variant="contained" 
                   startIcon={<SaveIcon />} 
                   onClick={handleUpdate}
+                  size="small"
+                  sx={{ bgcolor: '#1976d2', '&:hover': { bgcolor: '#115293' } }}
                 >
                   Save Changes
                 </Button>
@@ -302,35 +372,52 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
         </CardContent>
       </Card>
 
-      <Divider sx={{ mb: 4, borderColor: '#cccccc' }} />
-
       {/* Requests Section */}
-      <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: '#000000' }}>
+      <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ color: '#ffffff' }}>
         Rental History
       </Typography>
 
       {requests.length === 0 ? (
-        <Paper elevation={0} sx={{ p: 4, textAlign: 'center', bgcolor: '#f5f5f5', borderRadius: 2 }}>
-          <BookIcon sx={{ fontSize: 48, color: '#666666', mb: 1 }} />
-          <Typography sx={{ color: '#333333' }}>You have no rental requests yet.</Typography>
+        <Paper 
+          elevation={0} 
+          sx={{ 
+            p: 3, 
+            textAlign: 'center', 
+            background: 'rgba(255, 255, 255, 0.05)', 
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: 2 
+          }}
+        >
+          <BookIcon sx={{ fontSize: 40, color: 'rgba(255,255,255,0.5)', mb: 1 }} />
+          <Typography variant="body2" sx={{ color: '#e3f2fd' }}>You have no rental requests yet.</Typography>
         </Paper>
       ) : (
-        <TableContainer component={Paper} elevation={2} sx={{ borderRadius: 2, bgcolor: '#ffffff' }}>
-          <Table sx={{ minWidth: 600 }}>
-            <TableHead sx={{ bgcolor: '#eeeeee' }}>
+        <TableContainer 
+          component={Paper} 
+          elevation={0} 
+          sx={{ 
+            borderRadius: 2, 
+            background: 'rgba(255, 255, 255, 0.07)', 
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
+          }}
+        >
+          <Table size="small" sx={{ minWidth: 600 }}>
+            <TableHead sx={{ bgcolor: 'rgba(255, 255, 255, 0.1)' }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold', color: '#000000' }}>Book Title</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: '#000000' }}>Author</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', color: '#000000' }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'right', color: '#000000' }}>Action</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#ffffff', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Book Title</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#ffffff', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Author</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', color: '#ffffff', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'right', color: '#ffffff', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {requests.map((req) => (
-                <TableRow key={req._id} hover>
-                  <TableCell sx={{ color: '#000000' }}>{req.bookId?.title || 'Book deleted'}</TableCell>
-                  <TableCell sx={{ color: '#000000' }}>{req.bookId?.author || '-'}</TableCell>
-                  <TableCell>
+                <TableRow key={req._id} hover sx={{ '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.05)' }}}>
+                  <TableCell sx={{ color: '#e3f2fd', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{req.bookId?.title || 'Book deleted'}</TableCell>
+                  <TableCell sx={{ color: '#e3f2fd', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{req.bookId?.author || '-'}</TableCell>
+                  <TableCell sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <Chip
                       label={req.status}
                       color={getStatusChipColor(req.status)}
@@ -338,7 +425,7 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
                       sx={{ fontWeight: '500' }}
                     />
                   </TableCell>
-                  <TableCell sx={{ textAlign: 'right' }}>
+                  <TableCell sx={{ textAlign: 'right', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     {req.status === 'Pending' && (
                       <Button 
                         size="small" 

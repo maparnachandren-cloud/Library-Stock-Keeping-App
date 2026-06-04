@@ -36,7 +36,7 @@ body::before {
   position: fixed;
   inset: 0;
 
-  background-image: url('./assets/bgi.jpg');
+  background-image: url('./assets/abstract-textured-backgound.jpg');
   background-size: 100% auto;
   background-position: center;
   background-repeat: no-repeat;
