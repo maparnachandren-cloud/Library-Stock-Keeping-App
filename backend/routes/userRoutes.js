@@ -100,3 +100,45 @@ router.get('/:userId/requests', async (req, res) => {
 });
 
 module.exports = router;
+
+// GET USER NOTIFICATIONS
+router.get('/:userId/notifications', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Sort newest first
+    const sorted = [...user.notifications].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    res.json(sorted);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// MARK ONE NOTIFICATION AS READ
+router.put('/:userId/notifications/:notifId/read', async (req, res) => {
+  try {
+    await User.updateOne(
+      { _id: req.params.userId, 'notifications._id': req.params.notifId },
+      { $set: { 'notifications.$.isRead': true } }
+    );
+    res.json({ message: 'Marked as read' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// MARK ALL NOTIFICATIONS AS READ
+router.put('/:userId/notifications/readall', async (req, res) => {
+  try {
+    await User.updateOne(
+      { _id: req.params.userId },
+      { $set: { 'notifications.$[].isRead': true } }
+    );
+    res.json({ message: 'All marked as read' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
