@@ -46,7 +46,7 @@ const BookDetails = ({ currentUser }) => {
       );
       setUserRequest(found || null);
     } catch {
-      // non-critical, leave userRequest as null
+      // to leave userRequest as null
     }
   };
 
@@ -55,7 +55,7 @@ const BookDetails = ({ currentUser }) => {
     fetchUserRequest();
   }, [id]);
 
-  // Pre-fill rating with user's existing rating
+  // Pre-fill rating
   useEffect(() => {
     if (book && currentUser) {
       const existing = book.ratings.find((r) => r.userId === currentUser._id);
@@ -289,13 +289,10 @@ const BookDetails = ({ currentUser }) => {
         </Box>
       )}
 
-      {/* Comments */}
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6">
           Comments ({book.comments.length})
         </Typography>
-
-        {/* Add comment — admin cannot */}
         {currentUser.role !== 'admin' && (
           <Box sx={{ mt: 2 }}>
             <TextField
