@@ -1,0 +1,90 @@
+/* Page Container */
+.addbook-container {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+/* Heading */
+.addbook-title {
+  text-align: center;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.addbook-subtitle {
+  text-align: center;
+  color: #bdbdbd;
+  margin-bottom: 30px;
+}
+
+/* Form Card */
+.addbook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  padding: 35px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Text Fields */
+.addbook-form .MuiOutlinedInput-root {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+.addbook-form .MuiOutlinedInput-root:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.addbook-form .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 0 10px rgba(66, 165, 245, 0.4);
+}
+
+/* Labels */
+.addbook-form .MuiInputLabel-root {
+  color: #dcdcdc;
+}
+
+/* Helper Text */
+.addbook-form .MuiFormHelperText-root {
+  color: #b0b0b0;
+}
+
+/* Submit Button */
+.save-book-btn {
+  margin-top: 10px !important;
+  padding: 12px !important;
+
+  border-radius: 12px !important;
+
+  font-size: 16px !important;
+  font-weight: 600 !important;
+
+  text-transform: none !important;
+
+  background: linear-gradient(
+    135deg,
+    #1976d2,
+    #42a5f5
+  ) !important;
+
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.4) !important;
+
+  transition: all 0.3s ease !important;
+}
+
+.save-book-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(25, 118, 210, 0.5) !important;
+}
