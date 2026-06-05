@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Container, Typography, Box, TextField, Button, Autocomplete, Alert
 } from '@mui/material';
+import "./AddBook.css";
 
 const GENRES = [
   "Fiction","Fantasy","Science Fiction","Mystery","Thriller",
@@ -122,13 +123,13 @@ const AddBook = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Add Book</Typography>
+    <Container maxWidth="sm" className="addbook-container">
+      <Typography variant="h5" gutterBottom className="addbook-title">Enter book details to add it to the bookstore inventory</Typography>
 
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <Box component="form" onSubmit={handleSubmit}
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        className="addbook-form">
 
         <TextField
           label="Title" required
@@ -193,7 +194,7 @@ const AddBook = () => {
           error={formData.description.length > 1000}
         />
 
-        <Button type="submit" variant="contained">Save Book</Button>
+        <Button type="submit" variant="contained" className="save-book-btn">Save Book</Button>
       </Box>
     </Container>
   );

@@ -6,6 +6,7 @@ import {
   FormControl, InputLabel, Select, MenuItem, Chip,
   Autocomplete, Alert
 } from '@mui/material';
+import './AdminDashboard.css';
 
 const GENRES = [
   "Fiction","Fantasy","Science Fiction","Mystery","Thriller",
@@ -144,10 +145,12 @@ const AdminDashboard = () => {
   if (fetchError) return <Container sx={{ mt: 4 }}><Alert severity="error">{fetchError}</Alert></Container>;
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Admin Dashboard</Typography>
+    <Container maxWidth={false} sx={{ mt: 3, px: 4 }} 
+    className="admin-dashboard">
+      <div className="dashboard-card">
+      <Typography variant="h4" gutterBottom className="dashboard-title">Admin Dashboard</Typography>
 
-      <Button variant="contained" component={Link} to="/admin/addbook" sx={{ mb: 3 }}>
+      <Button variant="contained" component={Link} to="/admin/addbook" sx={{ mb: 3 }} className="add-book-btn">
         + Add Book
       </Button>
 
@@ -156,9 +159,15 @@ const AdminDashboard = () => {
           No books added yet. Click + Add Book to get started.
         </Typography>
       ) : (
-        <Table>
+        <Table className="admin-table">
           <TableHead>
-            <TableRow>
+            <TableRow sx={{
+      "& .MuiTableCell-head": {
+        color: "white",
+        fontWeight: "bold",
+        fontSize: "16px",
+      },
+    }}>
               <TableCell>Cover</TableCell>
               <TableCell>Title</TableCell>
               <TableCell>Author</TableCell>
@@ -178,8 +187,7 @@ const AdminDashboard = () => {
                 <TableCell>
                   <img
                     src={book.coverImage} alt={book.title}
-                    width="50" height="75"
-                    style={{ objectFit: 'cover', borderRadius: '4px' }}
+                    className="book-cover"
                     onError={(e) => { e.target.src = 'https://via.placeholder.com/50x75'; }}
                   />
                 </TableCell>
@@ -200,10 +208,12 @@ const AdminDashboard = () => {
                 </TableCell>
                 <TableCell>
                   <Button size="small"
+                   className="edit-btn"
                     onClick={() => { setEditing({ ...book }); setEditError(''); }}>
                     Edit
                   </Button>
                   <Button size="small" color="error"
+                   className="delete-btn"
                     onClick={() => handleDelete(book._id)}>
                     Delete
                   </Button>
@@ -220,7 +230,7 @@ const AdminDashboard = () => {
         onClose={() => { setEditing(null); setEditError(''); }}
         maxWidth="sm" fullWidth
       >
-        <Box sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box className="dialog-content" sx={{ p: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography variant="h5">Edit Book</Typography>
 
           {editError && <Alert severity="error">{editError}</Alert>}
@@ -308,6 +318,7 @@ const AdminDashboard = () => {
           )}
         </Box>
       </Dialog>
+      </div>
     </Container>
   );
 };
