@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Container, Typography, Box, TextField, Button, Autocomplete, Alert
 } from '@mui/material';
-import "./AddBook.css";
 
 const GENRES = [
   "Fiction","Fantasy","Science Fiction","Mystery","Thriller",
@@ -23,17 +22,9 @@ const GENRES = [
 
 const currentYear = new Date().getFullYear();
 
-// Author: letters, spaces, dots, hyphens, apostrophes
 const isValidAuthor = (val) => /^[a-zA-Z\s.\-']+$/.test(val.trim());
-
-// Title: letters, numbers, spaces, basic punctuation
-const isValidTitle = (val) => /^[a-zA-Z0-9\s.,!?'\-:&()]+$/.test(val.trim());
-
-// ISBN: 10 or 13 digits only
-const isValidISBN = (val) => /^\d{10}$/.test(val) || /^\d{13}$/.test(val);
-
-// Place: letters, spaces, commas, hyphens
-const isValidPlace = (val) => /^[a-zA-Z\s,\-.]+$/.test(val.trim());
+const isValidTitle  = (val) => /^[a-zA-Z0-9\s.,!?'\-:&()]+$/.test(val.trim());
+const isValidISBN   = (val) => /^\d{10}$/.test(val) || /^\d{13}$/.test(val);
 
 const AddBook = () => {
   const navigate = useNavigate();
@@ -47,39 +38,28 @@ const AddBook = () => {
     e.preventDefault();
     setError('');
 
-    // Required fields
     if (!formData.title.trim() || !formData.author.trim() ||
         !formData.genre || !formData.description.trim() ||
         !formData.price || !formData.coverImage.trim()) {
       setError('All required fields must be filled');
       return;
     }
-
-    // Title format
     if (!isValidTitle(formData.title)) {
       setError('Title contains invalid characters. Only letters, numbers, and basic punctuation allowed.');
       return;
     }
-
-    // Author format
     if (!isValidAuthor(formData.author)) {
       setError('Author name should only contain letters, spaces, dots, or hyphens (e.g. J.K. Rowling)');
       return;
     }
-
-    // Description max length
     if (formData.description.trim().length > 1000) {
       setError('Description cannot exceed 1000 characters');
       return;
     }
-
-    // Price
     if (Number(formData.price) <= 0) {
       setError('Price must be greater than 0');
       return;
     }
-
-    // Publication year — integer only, valid range
     if (formData.publicationYear) {
       const yr = Number(formData.publicationYear);
       if (!Number.isInteger(yr) || yr < 1450 || yr > currentYear) {
@@ -87,14 +67,10 @@ const AddBook = () => {
         return;
       }
     }
-
-    // Cover image URL
     if (!formData.coverImage.startsWith('http://') && !formData.coverImage.startsWith('https://')) {
       setError('Cover image must be a valid URL starting with http:// or https://');
       return;
     }
-
-    // ISBN format if provided
     if (formData.isbn.trim() && !isValidISBN(formData.isbn.trim())) {
       setError('ISBN must be exactly 10 or 13 digits (numbers only)');
       return;
@@ -123,14 +99,58 @@ const AddBook = () => {
   };
 
   return (
-    <Container maxWidth="sm" className="addbook-container">
-      <Typography variant="h5" gutterBottom className="addbook-title">Enter book details to add it to the bookstore inventory</Typography>
+    <Container
+      maxWidth="sm"
+      sx={{ mt: '50px', mb: '50px' }}
+    >
+      <Typography
+        variant="h5"
+        gutterBottom
+        sx={{
+          textAlign: 'center',
+          color: '#ffffff',
+          fontWeight: 700,
+          letterSpacing: '1px',
+          mb: '10px',
+        }}
+      >
+        Enter book details to add it to the bookstore inventory
+      </Typography>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && <Alert severity="error" sx={{ mb: 2, bgcolor: 'rgba(211,47,47,0.18)', color: '#ff8a80', border: '1px solid rgba(211,47,47,0.45)', borderRadius: '10px', fontWeight: 500, '& .MuiAlert-icon': { color: '#ff8a80' } }}>{error}</Alert>}
 
-      <Box component="form" onSubmit={handleSubmit}
-        className="addbook-form">
-
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          padding: '35px',
+          borderRadius: '18px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.35)',
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '12px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              background: 'rgba(255, 255, 255, 0.06)',
+            },
+            '&.Mui-focused': {
+              boxShadow: '0 0 10px rgba(66, 165, 245, 0.4)',
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#dcdcdc',
+          },
+          '& .MuiFormHelperText-root': {
+            color: '#b0b0b0',
+          },
+        }}
+      >
         <TextField
           label="Title" required
           value={formData.title}
@@ -194,7 +214,27 @@ const AddBook = () => {
           error={formData.description.length > 1000}
         />
 
-        <Button type="submit" variant="contained" className="save-book-btn">Save Book</Button>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            mt: '10px',
+            py: '12px',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: 600,
+            textTransform: 'none',
+            background: 'linear-gradient(135deg, #1976d2, #42a5f5)',
+            boxShadow: '0 4px 15px rgba(25, 118, 210, 0.4)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: '0 6px 20px rgba(25, 118, 210, 0.5)',
+            },
+          }}
+        >
+          Save Book
+        </Button>
       </Box>
     </Container>
   );

@@ -207,7 +207,7 @@ const BookDetails = ({ currentUser }) => {
   if (fetchError) {
     return (
       <Container sx={{ mt: 6 }}>
-        <Alert severity="error" sx={{ borderRadius: '12px', bgcolor: 'rgba(211,47,47,0.15)', color: '#ff8a80', border: '1px solid rgba(211,47,47,0.3)', mb: 3 }}>
+        <Alert severity="error" sx={{ borderRadius: '10px', bgcolor: '#0f2236', color: '#c8d8e8', border: '1px solid rgba(255,255,255,0.15)', mb: 3, fontWeight: 500, '& .MuiAlert-icon': { color: '#c8d8e8' } }}>
           {fetchError}
         </Alert>
         <Button
@@ -525,9 +525,9 @@ const BookDetails = ({ currentUser }) => {
                 severity="success"
                 sx={{
                   mt: 2, width: 'fit-content', borderRadius: '10px',
-                  bgcolor: 'rgba(46,213,115,0.12)', color: '#2ed573',
-                  border: '1px solid rgba(46,213,115,0.25)',
-                  '& .MuiAlert-icon': { color: '#2ed573' },
+                  bgcolor: '#0f2236', color: '#c8d8e8',
+                  border: '1px solid rgba(255,255,255,0.15)', fontWeight: 500,
+                  '& .MuiAlert-icon': { color: '#c8d8e8' },
                 }}
               >
                 {message}

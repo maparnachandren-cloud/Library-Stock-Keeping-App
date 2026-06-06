@@ -200,7 +200,7 @@ function Home() {
   if (fetchError) {
     return (
       <Container sx={{ mt: 6 }}>
-        <Alert severity="error" sx={{ borderRadius: '12px', bgcolor: 'rgba(211,47,47,0.15)', color: '#ff8a80', border: '1px solid rgba(211,47,47,0.3)' }}>
+        <Alert severity="error" sx={{ borderRadius: '10px', bgcolor: '#0f2236', color: '#c8d8e8', border: '1px solid rgba(255,255,255,0.15)', fontWeight: 500, '& .MuiAlert-icon': { color: '#c8d8e8' } }}>
           {fetchError}
         </Alert>
       </Container>
@@ -561,14 +561,14 @@ function Home() {
                         backdropFilter: 'blur(10px)',
                         ...(book.isAvailable ? {
                           bgcolor: 'rgba(46,213,115,0.18)',
-                          color: '#2ed573',
-                          border: '1px solid rgba(46,213,115,0.35)',
+                          color: '#009688',
+                          border: '1px solid rgba(51, 170, 100, 0.62)',
                           boxShadow: '0 0 10px rgba(46,213,115,0.2)',
                         } : {
-                          bgcolor: 'rgba(255,71,87,0.18)',
-                          color: '#ff4757',
+                          bgcolor: 'rgba(6, 0, 1, 0.61)',
+                          color: '#bfe1c181',
                           border: '1px solid rgba(255,71,87,0.35)',
-                          boxShadow: '0 0 10px rgba(255,71,87,0.15)',
+                          boxShadow: '0 0 10px rgba(24, 8, 10, 0.15)',
                         }),
                       }}>
                         {book.isAvailable ? '● Available' : '● Rented'}
@@ -603,7 +603,7 @@ function Home() {
  
                       {/* Author & Genre */}
                       <Typography sx={{
-                        fontSize: '0.78rem',
+                        fontSize: '0.98rem',
                         color: 'rgba(255,255,255,0.5)',
                         fontFamily: "'Plus Jakarta Sans', sans-serif",
                       }}>

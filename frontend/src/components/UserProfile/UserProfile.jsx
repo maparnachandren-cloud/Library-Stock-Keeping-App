@@ -181,7 +181,7 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
         />
       </Box>
 
-      {successMsg && <Alert severity="success" sx={{ mb: 2 }}>{successMsg}</Alert>}
+      {successMsg && <Alert severity="success" sx={{ mb: 2, bgcolor: 'rgba(46,160,67,0.18)', color: '#69db7c', border: '1px solid rgba(46,160,67,0.45)', borderRadius: '10px', fontWeight: 500, '& .MuiAlert-icon': { color: '#69db7c' } }}>{successMsg}</Alert>}
 
       {/* Profile Card - Glassmorphism Applied */}
       <Card
@@ -210,6 +210,7 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
   }}
 /> 
           {/* Avatar Area with Glow */}
+        
           <Avatar
   sx={{
     width: 110,
@@ -230,6 +231,7 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
 >
             {formData.name ? formData.name.charAt(0).toUpperCase() : <PersonIcon fontSize="large" />}
           </Avatar>
+          
 
           {!editMode ? (
             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -299,11 +301,34 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
             </Box>
           ) : (
             <Box component="form" noValidate sx={{ width: '100%', mt: 1 }}>
-              <Typography variant="subtitle1" fontWeight="bold" mb={2} display="flex" alignItems="center" justifyContent="center" gap={1} sx={{ color: '#e3f2fd' }}>
-                <EditIcon sx={{ color: '#64b5f6' }} fontSize="small" />       Update Your Details
-              </Typography>
+             <Typography
+  variant="h6"
+  sx={{
+    mb: 3,
+    mt: -1.5,
+    textAlign: 'center',
+    fontWeight: 600,
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
+    color: '#ffffff',
+    textShadow: '0 0 12px rgba(100,181,246,0.5)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1,
+  }}
+>
+  <EditIcon
+    sx={{
+      color: '#64b5f6',
+      fontSize: 25,
+      filter: 'drop-shadow(0 0 6px rgba(100,181,246,0.6))',
+    }}
+  />
+  Update Your Details
+</Typography>
               
-              {error && <Alert severity="error" sx={{ mb: 2, py: 0 }}>{error}</Alert>}
+              {error && <Alert severity="error" sx={{ mb: 2, py: 0, bgcolor: 'rgba(211,47,47,0.18)', color: '#ff8a80', border: '1px solid rgba(211,47,47,0.45)', borderRadius: '10px', fontWeight: 500, '& .MuiAlert-icon': { color: '#ff8a80' } }}>{error}</Alert>}
 
               {/* Form Fields Array with Ghost Inputs */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
@@ -320,18 +345,49 @@ const UserProfile = ({ currentUser, setCurrentUser }) => {
                 />
                 
                 <TextField
-                  fullWidth label="Phone Number" type="number" value={formData.phone} size="small"
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  inputProps={{ min: 1000000000, max: 9999999999 }}
-                  helperText="10 digit phone number" sx={textFieldStyles}
-                />
+  fullWidth
+  label="Phone Number"
+  type="tel"
+  value={formData.phone}
+  size="small"
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 10) {
+      setFormData({ ...formData, phone: value });
+    }
+  }}
+  inputProps={{
+    maxLength: 10,
+    inputMode: 'numeric',
+  }}
+  helperText="10 digit phone number"
+  sx={textFieldStyles}
+/>
                 
                 <TextField
-                  fullWidth label="Age" type="number" value={formData.age} size="small"
-                  onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                  inputProps={{ min: 1, max: 120 }}
-                  helperText="Between 1 and 120" sx={textFieldStyles}
-                />
+  fullWidth
+  label="Age"
+  type="number"
+  value={formData.age}
+  size="small"
+  onChange={(e) => {
+    const value = e.target.value;
+
+    if (
+      value === '' ||
+      (Number(value) >= 1 && Number(value) <= 120)
+    ) {
+      setFormData({ ...formData, age: value });
+    }
+  }}
+  inputProps={{
+    min: 1,
+    max: 120,
+    step: 1,
+  }}
+  helperText="Between 1 and 120"
+  sx={textFieldStyles}
+/>
                 
                 <TextField
                   fullWidth label="Place" value={formData.place} size="small"
