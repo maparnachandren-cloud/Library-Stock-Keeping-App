@@ -121,7 +121,7 @@ const Login = ({ setCurrentUser }) => {
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <Alert severity="error" sx={{ mb: 3, bgcolor: 'rgba(211,47,47,0.18)', color: '#ff8a80', border: '1px solid rgba(211,47,47,0.45)', borderRadius: '10px', fontWeight: 500, '& .MuiAlert-icon': { color: '#ff8a80' } }}>
             {error}
           </Alert>
         )}

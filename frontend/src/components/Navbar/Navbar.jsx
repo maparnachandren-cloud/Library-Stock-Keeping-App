@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppBar, Toolbar, Typography, Button, Box,
   IconButton, Badge, Popover, Tabs, Tab,
-  List, ListItem, ListItemText, Divider, Tooltip
+  List, ListItem, ListItemText, Divider, Tooltip,
+  Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from '@mui/material';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -96,7 +97,10 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
     }
   };
 
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
   const handleLogout = () => {
+    setLogoutDialogOpen(false);
     localStorage.removeItem('currentUser');
     setCurrentUser(null);
     setNotifications([]);
@@ -334,7 +338,7 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
                 <Button color="inherit" component={Link} to="/profile" sx={navButtonStyle}>
                   My Profile
                 </Button>
-                <Button color="inherit" onClick={handleLogout} sx={navButtonStyle}>
+                <Button color="inherit" onClick={() => setLogoutDialogOpen(true)} sx={navButtonStyle}>
                   Logout
                 </Button>
               </>
@@ -349,7 +353,7 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
                 <Button color="inherit" component={Link} to="/profile" sx={navButtonStyle}>
                   My Profile
                 </Button>
-                <Button color="inherit" onClick={handleLogout} sx={navButtonStyle}>
+                <Button color="inherit" onClick={() => setLogoutDialogOpen(true)} sx={navButtonStyle}>
                   Logout
                 </Button>
               </>
@@ -361,7 +365,7 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
                 <Button color="inherit" component={Link} to="/home" sx={navButtonStyle}>
                   Home
                 </Button>
-                <Button color="inherit" onClick={handleLogout} sx={navButtonStyle}>
+                <Button color="inherit" onClick={() => setLogoutDialogOpen(true)} sx={navButtonStyle}>
                   Logout
                 </Button>
               </>
@@ -376,7 +380,7 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
                 <Button color="inherit" component={Link} to="/admin/addbook" sx={navButtonStyle}>
                   Add Book
                 </Button>
-                <Button color="inherit" onClick={handleLogout} sx={navButtonStyle}>
+                <Button color="inherit" onClick={() => setLogoutDialogOpen(true)} sx={navButtonStyle}>
                   Logout
                 </Button>
               </>
@@ -391,7 +395,7 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
                 <Button color="inherit" component={Link} to="/admin/addbook" sx={navButtonStyle}>
                   Add Book
                 </Button>
-                <Button color="inherit" onClick={handleLogout} sx={navButtonStyle}>
+                <Button color="inherit" onClick={() => setLogoutDialogOpen(true)} sx={navButtonStyle}>
                   Logout
                 </Button>
               </>
@@ -406,7 +410,7 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
                 <Button color="inherit" component={Link} to="/admin/users" sx={navButtonStyle}>
                   Manage Users
                 </Button>
-                <Button color="inherit" onClick={handleLogout} sx={navButtonStyle}>
+                <Button color="inherit" onClick={() => setLogoutDialogOpen(true)} sx={navButtonStyle}>
                   Logout
                 </Button>
               </>
@@ -505,6 +509,63 @@ const Navbar = ({ currentUser, setCurrentUser }) => {
         </Box>
 
       </Popover>
+      {/* Logout Confirmation Dialog */}
+      <Dialog
+        open={logoutDialogOpen}
+        onClose={() => setLogoutDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: '#0f2236',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: '16px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+            px: 1,
+            minWidth: 320,
+          }
+        }}
+      >
+        <DialogTitle sx={{ color: '#000000', fontFamily: "'Playfair Display', serif", fontWeight: 700, pt: 3 }}>
+          Confirm Logout
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ color: '#000000', fontSize: '0.95rem', lineHeight: 1.6 }}>
+            Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ pb: 2.5, px: 3, gap: 1 }}>
+          <Button
+            onClick={() => setLogoutDialogOpen(false)}
+            sx={{
+              color: '#000000',
+              border: '1px solid rgb(10, 152, 234)',
+              bgcolor: 'rgba(181, 186, 186, 0.9)',
+              borderRadius: '10px',
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 2,
+              '&:hover': { bgcolor: 'rgb(79, 79, 79)', borderColor: 'rgba(255,255,255,0.4)' },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleLogout}
+            variant="contained"
+            sx={{
+              borderRadius: '10px',
+              textTransform: 'none',
+              fontWeight: 600,
+              px: 2,
+              color: '#ffffff',
+              bgcolor: '#c0392b',
+              boxShadow: '0 4px 14px rgba(192,57,43,0.4)',
+              '&:hover': { bgcolor: '#a93226', boxShadow: '0 6px 18px rgba(192,57,43,0.5)' },
+            }}
+          >
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

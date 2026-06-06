@@ -148,7 +148,7 @@ const Signup = () => {
         </Typography>
       </Box>
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 2, bgcolor: 'rgba(211,47,47,0.18)', color: '#ff8a80', border: '1px solid rgba(211,47,47,0.45)', borderRadius: '10px', fontWeight: 500, '& .MuiAlert-icon': { color: '#ff8a80' } }}>
           {error}
         </Alert>
       )}
@@ -181,25 +181,45 @@ const Signup = () => {
           onChange={handleChange}
         />
 
-        <TextField
-          label="Age"
-          name="age"
-          type="number"
-          required
-          fullWidth
-          value={formData.age}
-          onChange={handleChange}
-        />
+          <TextField
+  label="Age"
+  name="age"
+  type="number"
+  required
+  fullWidth
+  value={formData.age}
+  onChange={(e) => {
+    const value = Number(e.target.value);
+    if (value >= 1 || e.target.value === '') {
+      setFormData({ ...formData, age: e.target.value });
+    }
+  }}
+  inputProps={{
+    min: 1,
+    max: 120,
+  }}
+/>     
+
 
         <TextField
-          label="Phone Number"
-          name="phone"
-          type="number"
-          required
-          fullWidth
-          value={formData.phone}
-          onChange={handleChange}
-        />
+  label="Phone Number"
+  name="phone"
+  type="tel"
+  required
+  fullWidth
+  value={formData.phone}
+  onChange={(e) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 10) {
+      setFormData({ ...formData, phone: value });
+    }
+  }}
+  inputProps={{
+    maxLength: 10,
+    inputMode: 'numeric',
+    pattern: '[0-9]*',
+  }}
+/>
 
         <TextField
           label="Place"
@@ -226,14 +246,14 @@ const Signup = () => {
         </FormControl>
 
         <TextField
-          label="Password"
-          name="password"
-          type="password"
-          required
-          fullWidth
-          value={formData.password}
-          onChange={handleChange}
-        />
+  label="Password"
+  name="password"
+  type="text"
+  required
+  fullWidth
+  value={formData.password}
+  onChange={handleChange}
+/>
 
         <TextField
           label="Confirm Password"
