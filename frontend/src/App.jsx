@@ -29,7 +29,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
-    primary:   { main: '#1a3c5e', light: '#2a5f94', contrastText: '#fff' },
+    primary:   { main: '#091929', light: '#2a5f94', contrastText: '#fff' },
     secondary: { main: '#e8a04b', contrastText: '#1c1c1c' },
     background:{ default: '#f8f5f0', paper: '#ffffff' },
     success:   { main: '#2d7a4f' },
